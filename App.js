@@ -1,10 +1,19 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import Login from "./navegacion/login"
+import RecuperarContraseña from "./navegacion/recuperar";
+import CodigoRecuperacion from "./navegacion/codigo";
+import NuevaContraseña from "./navegacion/nuevaContraseña";
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+      <Login/>
+      {/* <RecuperarContraseña/> */}
+      {/* <CodigoRecuperacion/> */}
+      {/* <NuevaContraseña/> */}
+      
+
       <StatusBar style="auto" />
     </View>
   );
