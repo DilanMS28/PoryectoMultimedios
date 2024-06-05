@@ -1,12 +1,19 @@
 import React from "react";
 import { View, Image, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { TextInput } from "react-native-paper";
+import { Divider,TextInput } from "react-native-paper";
+
 import {MaterialCommunityIcons} from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Login() {
+
+  //variable para guardar la navegación
+  const navigation = useNavigation()
+
+
   return (
-    <View style={{width:'90%'}}>
-      <TouchableOpacity>
+    <View style={styles.container}>
+      <TouchableOpacity onPress={()=>navigation.navigate("recuperarcontraseña")}>
             <MaterialCommunityIcons name="arrow-left" color={"black"} size={40} style={styles.flecha}/>
       </TouchableOpacity>
 
@@ -17,9 +24,14 @@ export default function Login() {
         />
       </View>
 
-      <View style={styles.border}>
-        <Text style={styles.titulo}>Ingresar Código</Text>
-      </View>
+        {/* <View style={styles.border}> */}
+          <Text style={styles.titulo}>Ingresar Código</Text>
+        {/* </View> */}
+
+        <View style={styles.division}/>
+
+
+      <Divider style={{ backgroundColor: 'blue', height: 1 }}/>
 
       <Text style={styles.txt}>Hemos enviado a tu correo un código de verificación el cual debes introducir aquí</Text>
 
@@ -32,7 +44,7 @@ export default function Login() {
         underlineColor="transparent"
       ></TextInput>
 
-      <TouchableOpacity>
+      <TouchableOpacity onPress={()=>navigation.navigate("nuevacontraseña")}>
         <Text style={styles.btnIniciarSesion}>Verificar</Text>
       </TouchableOpacity>
 
@@ -41,6 +53,15 @@ export default function Login() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingRight: 24,
+    paddingLeft: 24,
+
+  },
   txt: {
     color: "#484848",
     opacity: 0.5,
@@ -57,11 +78,12 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
   },
 
-  border: {
-    borderBottomWidth: 4,
-    borderBottomColor: "#BEEE3B",
-    borderStyle: "solid",
-    marginBottom: 30,
+  division:{
+    height: 4,
+    width: "100%",
+    backgroundColor: "#BEEE3B",
+    marginTop: 10,
+    marginBottom: 10,
   },
 
   titulo: {

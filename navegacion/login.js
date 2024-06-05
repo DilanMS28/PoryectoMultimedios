@@ -1,11 +1,15 @@
 import React from "react";
 import { View, Image, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { TextInput } from "react-native-paper";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Login() {
+  //variable para guardar la navegación
+  const navigation = useNavigation()
+
   return (
-    <View style={{width:'90%'}}>
-      <TouchableOpacity>
+    <View style={styles.container}>
+      <TouchableOpacity onPress={()=>navigation.navigate("crearcuenta")}>
         <Text style={styles.txtRegistrarse}>Registrarme</Text>
       </TouchableOpacity>
 
@@ -16,9 +20,8 @@ export default function Login() {
         />
       </View>
 
-      <View style={styles.border}>
         <Text style={styles.titulo}>Iniciar Sesión</Text>
-      </View>
+        <View style={styles.division}/>
 
       <Text style={styles.label}>Usuario</Text>
       <TextInput
@@ -30,6 +33,7 @@ export default function Login() {
 
       <Text style={styles.label}>Contraseña</Text>
       <TextInput
+        secureTextEntry={true}
         placeholder="Contraseña"
         style={styles.inputTxt}
         underlineColor="transparent"
@@ -39,14 +43,23 @@ export default function Login() {
         <Text style={styles.btnIniciarSesion}>Iniciar Sesión</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity>
-        <Text style={styles.txtOlvidar}>Olvidaste tu contraseñas</Text>
+      <TouchableOpacity onPress={()=>navigation.navigate("recuperarcontraseña")}>
+        <Text style={styles.txtOlvidar}>Olvidaste tu contraseña?</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingRight: 24,
+        paddingLeft: 24,
+
+      },
   txtRegistrarse: {
     color: "#484848",
     opacity: 0.5,
@@ -62,12 +75,12 @@ const styles = StyleSheet.create({
     marginRight: "auto",
     marginLeft: "auto",
   },
-
-  border: {
-    borderBottomWidth: 4,
-    borderBottomColor: "#BEEE3B",
-    borderStyle: "solid",
-    marginBottom: 30,
+  division:{
+    height: 4,
+    width: "100%",
+    backgroundColor: "#BEEE3B",
+    marginTop: 10,
+    marginBottom: 10,
   },
 
   titulo: {
@@ -82,7 +95,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 10,
-    marginTop: 15,
+    marginTop: 20,
   },
   inputTxt:{
     backgroundColor:"#DBDBDB",

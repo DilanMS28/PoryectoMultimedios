@@ -2,11 +2,17 @@ import React from "react";
 import { View, Image, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { TextInput } from "react-native-paper";
 import {MaterialCommunityIcons} from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Login() {
+
+  //variable para guardar la navegación
+  const navigation = useNavigation()
+
   return (
-    <View style={{width:'90%'}}>
-      <TouchableOpacity>
+    <View style={styles.container}>
+
+      <TouchableOpacity onPress={()=>navigation.navigate("login")}>
         <MaterialCommunityIcons name="arrow-left" color={"black"} size={40} style={styles.flecha}/>
       </TouchableOpacity>
 
@@ -17,12 +23,15 @@ export default function Login() {
         />
       </View>
 
-      <View style={styles.border}>
-        <Text style={styles.titulo}>Nueva Contraseña</Text>
-      </View>
+      
+      <Text style={styles.titulo}>Nueva Contraseña</Text>
+      
+
+      <View style={styles.division}/>
 
       <Text style={styles.label}>Nueva Contraseña</Text>
       <TextInput
+        secureTextEntry={true}
         placeholder="Nueva Contraseña"
         style={styles.inputTxt}
         underlineColor="transparent"
@@ -30,12 +39,13 @@ export default function Login() {
 
       <Text style={styles.label}>Confirmar Contraseña</Text>
       <TextInput
+        secureTextEntry={true}
         placeholder="Confirmar Contraseña"
         style={styles.inputTxt}
         underlineColor="transparent"
       ></TextInput>
 
-      <TouchableOpacity>
+      <TouchableOpacity onPress={()=>navigation.navigate("login")}>
         <Text style={styles.btnIniciarSesion}>Guardar</Text>
       </TouchableOpacity>
 
@@ -44,6 +54,22 @@ export default function Login() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingRight: 24,
+    paddingLeft: 24,
+
+  },
+  division:{
+    height: 4,
+    width: "100%",
+    backgroundColor: "#BEEE3B",
+    marginTop: 10,
+    marginBottom: 10,
+  },
   txtRegistrarse: {
     color: "#484848",
     opacity: 0.5,
@@ -60,12 +86,12 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
   },
 
-  border: {
-    borderBottomWidth: 4,
-    borderBottomColor: "#BEEE3B",
-    borderStyle: "solid",
-    marginBottom: 30,
-  },
+  // border: {
+  //   borderBottomWidth: 4,
+  //   borderBottomColor: "#BEEE3B",
+  //   borderStyle: "solid",
+  //   marginBottom: 30,
+  // },
 
   titulo: {
     color: "#000",
