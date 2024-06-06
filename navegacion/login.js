@@ -39,7 +39,7 @@ export default function Login() {
         underlineColor="transparent"
       ></TextInput>
 
-      <TouchableOpacity>
+      <TouchableOpacity onPress={()=>navigation.navigate("home")}>
         <Text style={styles.btnIniciarSesion}>Iniciar Sesión</Text>
       </TouchableOpacity>
 
