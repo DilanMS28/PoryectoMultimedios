@@ -1,8 +1,8 @@
 import React from "react";
 import "react-native-gesture-handler";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { createDrawerNavigator } from "@react-navigation/drawer";
+import { DrawerContentScrollView, createDrawerNavigator } from "@react-navigation/drawer";
 
 //importar las rutas de los archivos
 import Login from "./navegacion/login";
@@ -11,10 +11,13 @@ import CodigoRecuperacion from "./navegacion/codigo";
 import NuevaContraseña from "./navegacion/nuevaContraseña";
 import CrearCuenta from "./navegacion/crearCuenta";
 import Home from "./navegacion/home";
+import MenuButton from "./components/menuButton"
+
 
 //variable con la función stacknavigator
 const StackNav = createStackNavigator();
 const DrawerNav = createDrawerNavigator();
+
 
 //crear la función de rutas con el stack
 function Stacks() {
@@ -44,10 +47,14 @@ function Stacks() {
 function Drawers() {
 
   return (
-    <DrawerNav.Navigator initialRouteName="Inicio" screenOptions={{ headerShown: false, drawerStyle: {} }}>
+    <DrawerNav.Navigator 
+        initialRouteName="inicio" 
+        screenOptions={ { headerShown: false } }
+        // drawerContent={ (props) => <MenuItem {...props}/> }
+    >
 
       <DrawerNav.Screen name="inicio" component={Home} options={{drawerLabel:"Inicio"}}/>
-      <DrawerNav.Screen name="habitos" component={RecuperarContraseña} options={{drawerLabel:"Habitos Saludables"}}/>
+      <DrawerNav.Screen name="habitos" component={RecuperarContraseña} options={{drawerLabel:"Habitos Saludables"}} />
       <DrawerNav.Screen name="imc" component={CodigoRecuperacion} options={{drawerLabel:"Indice Masa Corporal"}}/>
       <DrawerNav.Screen name="rutinas" component={NuevaContraseña} options={{drawerLabel:"Rutina de Ejercicios"}}/>
       <DrawerNav.Screen name="calendario" component={CrearCuenta} options={{drawerLabel:"Calendario"}} />
@@ -57,10 +64,18 @@ function Drawers() {
   );
 }
 
+//https://www.youtube.com/watch?v=TxpMHws0I6Q
+const MenuItem = ({navigation}) => {
+    return(
+        <DrawerContentScrollView>
+            <MenuButton text= "Inicio" onPress={navigation.navigate("inicio")} />
+        </DrawerContentScrollView>
+    );
+}
+
 export default function Navegacion() {
   return (
     <NavigationContainer>
-      {/* //retornamos la función con las rutas stacks */}
       <Stacks />
     </NavigationContainer>
   );
