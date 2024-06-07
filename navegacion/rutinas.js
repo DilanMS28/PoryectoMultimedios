@@ -32,15 +32,15 @@ export default function Habitos() {
       </View>
 
       <ScrollView >
-        <Text style={styles.titulo}>Habitos Saludables</Text>
+        <Text style={styles.titulo}>Rutinas Ejercicios</Text>
 
-        <Text style={styles.txt}>Nuestros habitos son los que nos definen</Text>
+        <Text style={styles.txt}>El ejercicio nos ayuda a mantenernos saludables</Text>
 
         <View style={styles.tarjeta}>
             
             <View style={styles.headerTarjeta}>
-                <MaterialCommunityIcons name="white-balance-sunny" fontSize={10} color={"white"} size={40} style={styles.flecha}/>
-                <Text style={styles.tituloTarjeta}>Hábitos Diurnos</Text>
+                <MaterialCommunityIcons name="dumbbell" fontSize={10} color={"white"} size={40} style={styles.flecha}/>
+                <Text style={styles.tituloTarjeta}>Quemar Grasa</Text>
             </View>
 
             <Text style={styles.txtTarjeta}>Son aquellos que nos ayudan a mantenernos con energía durante el día</Text>
@@ -55,8 +55,8 @@ export default function Habitos() {
         <View style={styles.tarjeta}>
 
             <View style={styles.headerTarjeta}>
-                <MaterialCommunityIcons name="moon-waning-crescent" fontSize={10} color={"white"} size={40} style={styles.flecha}/>
-                <Text style={styles.tituloTarjeta}>Hábitos Nocturnos</Text>
+                <MaterialCommunityIcons name="weight-lifter" fontSize={10} color={"white"} size={40} style={styles.flecha}/>
+                <Text style={styles.tituloTarjeta}>Ganar Masa Muscular</Text>
             </View>
 
             <Text style={styles.txtTarjeta}>Son aquellos que nos ayudan a conciliar mejor el sueño y favorece la recuperación y el descanso</Text>
@@ -70,8 +70,8 @@ export default function Habitos() {
         <View style={styles.tarjeta}>
 
             <View style={styles.headerTarjeta}>
-                <MaterialCommunityIcons name="food" fontSize={10} color={"white"} size={40} style={styles.flecha}/>
-                <Text style={styles.tituloTarjeta}>Hábitos Alimenticios</Text>
+                <MaterialCommunityIcons name="run" fontSize={10} color={"white"} size={40} style={styles.flecha}/>
+                <Text style={styles.tituloTarjeta}>Crossfit</Text>
             </View>
 
             <Text style={styles.txtTarjeta}>Son aquellos que favorecen la digestión y ayudan a mantener un cuerpo sano</Text>
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
   txt: {
     color: "#484848",
     fontWeight: "400",
-    fontSize: 18,
+    fontSize: 16,
     textAlign: "center",
     marginBottom: 30,
     marginRight: 20,

@@ -12,7 +12,8 @@ export default function Habitos() {
   //variables para los datos
   const [peso, setPeso] = useState('');
   const [altura, setAltura] = useState('');
-  const [imc, setImc] = useState(null);
+  const [imc, setImc] = useState(0);
+  const [estado, setEstado] = useState()
 
   function calcularIMC(peso, altura) {
     const alturaEnMetros = altura / 100;
@@ -20,10 +21,22 @@ export default function Habitos() {
     return imc;
   }
 
+  function tabla(imc){
+    if(imc < 18.5){
+      setEstado("Peso inferior al normal")
+    }else if(18.5 <= imc && imc <24.9){
+      setEstado("Normal")
+    }else if(24.9 <= imc && imc <29.9){
+      setEstado("Peso superior al normal")
+    }else if(imc>= 30.0){
+      setEstado("Obesidad")
+    }
+  }
+
   const handleCalcular = () => {
     const imcCalculado = calcularIMC(parseFloat(peso), parseFloat(altura));
     setImc(imcCalculado);
-    console.log(peso, altura)
+    tabla(imcCalculado);
   };
 
   return (
@@ -55,18 +68,21 @@ export default function Habitos() {
         <Text style={styles.txt}>Calcula tu Indice de Masa Corporal</Text>
 
         <Text style={styles.label}>Estatura</Text>
-        <TextInput keyboardType="ascii-capable" placeholder="Estatura en cm"  style={styles.inputTxt} underlineColor="transparent" onChangeText={(value)=>setAltura(value)} value={altura}></TextInput>
+        <TextInput keyboardType="numeric" placeholder="Estatura en cm"  style={styles.inputTxt} underlineColor="transparent" onChangeText={(value)=>setAltura(value)} value={altura}></TextInput>
         
         <Text style={styles.label}>Peso</Text>
-        <TextInput keyboardType="ascii-capable" placeholder="Peso en kg"  style={styles.inputTxt} underlineColor="transparent" onChangeText={(value)=>setPeso(value)} value={peso}></TextInput>
+        <TextInput keyboardType="numeric" placeholder="Peso en kg"  style={styles.inputTxt} underlineColor="transparent" onChangeText={(value)=>setPeso(value)} value={peso}></TextInput>
 
         <TouchableOpacity onPress={handleCalcular}>
         <Text style={styles.btninfo}>Calcular</Text>
       </TouchableOpacity>
 
-
-      <Text style={styles.label}>Resultado</Text>
-      {imc && <Text>IMC: {imc.toFixed(2)} </Text>}
+      <Text style={styles.titulo}>Resultado</Text>
+      <View style={styles.resultado}>
+        {/* {imc && <Text>IMC: {imc.toFixed(2)} </Text>} */}
+        <Text style={styles.imc}>IMC: {imc.toFixed(2)} {'\n\n'} Estado: {estado} </Text>
+        {/* <Text style={styles.imc}>Estado: {estado} </Text> */}
+      </View>
 
       </ScrollView>
     </View>
@@ -156,4 +172,22 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderRadius: 20,
   },
+
+  resultado:{
+    backgroundColor: "#DBDBDB",
+    width: "90%",
+    marginRight: "auto",
+    marginLeft: "auto",
+    padding: 20,
+    borderRadius: 20,
+    height: 150,
+    marginTop: 5,
+  },
+  imc:{
+    color: "#000",
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginTop: 20,
+  }
 }); //cierre de la hoja de stilos
