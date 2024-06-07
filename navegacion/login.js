@@ -52,14 +52,14 @@ export default function Login() {
 
 const styles = StyleSheet.create({
   container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingRight: 24,
-        paddingLeft: 24,
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingRight: 24,
+    paddingLeft: 24,
 
-      },
+  },
   txtRegistrarse: {
     color: "#484848",
     opacity: 0.5,
