@@ -48,7 +48,7 @@ function Drawers() {
 
   return (
     <DrawerNav.Navigator 
-        initialRouteName="inicio" 
+        initialRouteName="Inicio" 
         screenOptions={ { headerShown: false } }
         // drawerContent={ (props) => <MenuItem {...props}/> }
     >
@@ -65,13 +65,13 @@ function Drawers() {
 }
 
 //https://www.youtube.com/watch?v=TxpMHws0I6Q
-const MenuItem = ({navigation}) => {
-    return(
-        <DrawerContentScrollView>
-            <MenuButton text= "Inicio" onPress={navigation.navigate("inicio")} />
-        </DrawerContentScrollView>
-    );
-}
+// const MenuItem = ({navigation}) => {
+//     return(
+//         <DrawerContentScrollView>
+//             <MenuButton text= "Inicio" onPress={navigation.navigate("inicio")} />
+//         </DrawerContentScrollView>
+//     );
+// }
 
 export default function Navegacion() {
   return (

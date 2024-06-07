@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Image, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { Divider,TextInput } from "react-native-paper";
+import {TextInput } from "react-native-paper";
 
 import {MaterialCommunityIcons} from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -30,8 +30,6 @@ export default function Login() {
 
         <View style={styles.division}/>
 
-
-      <Divider style={{ backgroundColor: 'blue', height: 1 }}/>
 
       <Text style={styles.txt}>Hemos enviado a tu correo un código de verificación el cual debes introducir aquí</Text>
 

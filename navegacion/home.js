@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Image, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { HoverEffect, ScrollView } from "react-native-gesture-handler";
+import { ScrollView } from "react-native-gesture-handler";
 import {MaterialCommunityIcons} from "@expo/vector-icons";
 
 export default function Login() {
