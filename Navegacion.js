@@ -12,7 +12,7 @@ import NuevaContraseña from "./navegacion/nuevaContraseña";
 import CrearCuenta from "./navegacion/crearCuenta";
 import Home from "./navegacion/home";
 import MenuButton from "./components/menuButton"
-
+import Config from './navegacion/config'
 
 //variable con la función stacknavigator
 const StackNav = createStackNavigator();
@@ -58,7 +58,7 @@ function Drawers() {
       <DrawerNav.Screen name="imc" component={CodigoRecuperacion} options={{drawerLabel:"Indice Masa Corporal"}}/>
       <DrawerNav.Screen name="rutinas" component={NuevaContraseña} options={{drawerLabel:"Rutina de Ejercicios"}}/>
       <DrawerNav.Screen name="calendario" component={CrearCuenta} options={{drawerLabel:"Calendario"}} />
-      <DrawerNav.Screen name="config" component={Home}  options={{drawerLabel:"Configuraciones"}}/>
+      <DrawerNav.Screen name="config" component={Config}  options={{drawerLabel:"Configuraciones"}}/>
 
     </DrawerNav.Navigator>
   );
