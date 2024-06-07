@@ -26,7 +26,7 @@ export default function Login() {
       <Text style={styles.label}>Usuario</Text>
       <TextInput
         keyboardType="ascii-capable"
-        placeholder="Nombre Usuario"
+        placeholder="Nombre Usuario" 
         style={styles.inputTxt}
         underlineColor="transparent"
       ></TextInput>
