@@ -11,6 +11,8 @@ import CodigoRecuperacion from "./navegacion/codigo";
 import NuevaContraseña from "./navegacion/nuevaContraseña";
 import CrearCuenta from "./navegacion/crearCuenta";
 import Home from "./navegacion/home";
+import Habitos from "./navegacion/habitos";
+import IMC from "./navegacion/imc";
 import MenuButton from "./components/menuButton"
 
 
@@ -29,14 +31,8 @@ function Stacks() {
       screenOptions={{ headerShown: false }}
     >
       <StackNav.Screen name="login" component={Login} />
-      <StackNav.Screen
-        name="recuperarcontraseña"
-        component={RecuperarContraseña}
-      />
-      <StackNav.Screen
-        name="codigorecuperacion"
-        component={CodigoRecuperacion}
-      />
+      <StackNav.Screen name="recuperarcontraseña" component={RecuperarContraseña}/>
+      <StackNav.Screen name="codigorecuperacion" component={CodigoRecuperacion}/>
       <StackNav.Screen name="nuevacontraseña" component={NuevaContraseña} />
       <StackNav.Screen name="crearcuenta" component={CrearCuenta} />
       <StackNav.Screen name="home" component={Drawers} />
@@ -48,14 +44,14 @@ function Drawers() {
 
   return (
     <DrawerNav.Navigator 
-        initialRouteName="Inicio" 
+        initialRouteName="inicio" 
         screenOptions={ { headerShown: false } }
         // drawerContent={ (props) => <MenuItem {...props}/> }
     >
 
       <DrawerNav.Screen name="inicio" component={Home} options={{drawerLabel:"Inicio"}}/>
-      <DrawerNav.Screen name="habitos" component={RecuperarContraseña} options={{drawerLabel:"Habitos Saludables"}} />
-      <DrawerNav.Screen name="imc" component={CodigoRecuperacion} options={{drawerLabel:"Indice Masa Corporal"}}/>
+      <DrawerNav.Screen name="habitos" component={Habitos} options={{drawerLabel:"Habitos Saludables"}} />
+      <DrawerNav.Screen name="imc" component={IMC} options={{drawerLabel:"Indice Masa Corporal"}}/>
       <DrawerNav.Screen name="rutinas" component={NuevaContraseña} options={{drawerLabel:"Rutina de Ejercicios"}}/>
       <DrawerNav.Screen name="calendario" component={CrearCuenta} options={{drawerLabel:"Calendario"}} />
       <DrawerNav.Screen name="config" component={Home}  options={{drawerLabel:"Configuraciones"}}/>
