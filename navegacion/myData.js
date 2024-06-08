@@ -1,11 +1,12 @@
-import { Image, View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { Picker } from "@react-native-picker/picker";
+import { useState } from "react";
 
+export default function MyData() {
 
-
-export default function EditProfile() {
-
+    const [selectedValue, setSelectedValue] = useState(0);
     const navigation = useNavigation();
 
     return (
@@ -18,47 +19,47 @@ export default function EditProfile() {
             </View>
 
             <ScrollView>
-                <View style={styles.editPerfil}>
-
-                    <MaterialCommunityIcons name="plus-circle" color={'#BEEE3B'} size={40} style={styles.Icon}/>
-
-                    <Image source={require('../assets/imagenes/perfile.png')} style={{ width: 150, height: 150, marginLeft: 'auto', marginRight: 'auto', bottom: 35, zIndex: -1 }} />
-
-                </View>
-                <Text style={styles.Edit}> Editar Perfil</Text>
+                <Text style={styles.Edit}> Editar mis datos</Text>
                 <View style={styles.Line} />
 
-                <Text style={styles.Tittle}>Nombre</Text>
+                <Text style={styles.Tittle}>Altura</Text>
                 <TextInput
-                    keyboardType="ascii-capable"
-                    placeholder="Tu nombre:"
+                    keyboardType="numeric"
+                    placeholder="Tu estatura en cm:"
                     style={styles.inputTxt}
                     underlineColor="transparent"
                 ></TextInput>
 
-                <Text style={styles.Tittle}>Apellidos</Text>
+                <Text style={styles.Tittle}>Peso</Text>
                 <TextInput
-                    keyboardType="ascii-capable"
-                    placeholder="Tus apellidos:"
+                    keyboardType="numeric"
+                    placeholder="Tu peso en Kg::"
                     style={styles.inputTxt}
                     underlineColor="transparent"
                 ></TextInput>
 
-                <Text style={styles.Tittle}>Correo</Text>
+                <Text style={styles.Tittle}>Horas de sueño</Text>
                 <TextInput
-                    keyboardType="email-address"
-                    placeholder="Correo Electrónico:"
+                    keyboardType="numeric"
+                    placeholder="Tus horas de sueño:"
                     style={styles.inputTxt}
                     underlineColor="transparent"
                 ></TextInput>
 
-                <Text style={styles.Tittle}>Contraseña</Text>
-                <TextInput
-                    keyboardType="ascii-capable"
-                    placeholder="Contraseña:"
-                    style={styles.inputTxt}
-                    underlineColor="transparent"
-                ></TextInput>
+                <Text style={styles.Tittle}>Tipo de sangre</Text>
+                <Picker selectedValue={selectedValue} onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)} style={styles.Pick}>
+                    <Picker.Item label="--Seleccionar--" value={0} />
+                    <Picker.Item label="A+" value={1} />
+                    <Picker.Item label="A-" value={2} />
+                    <Picker.Item label="B+" value={3} />
+                    <Picker.Item label="B-" value={4} />
+                    <Picker.Item label="AB+" value={5} />
+                    <Picker.Item label="AB-" value={6} />
+                    <Picker.Item label="0+" value={7} />
+                    <Picker.Item label="O-" value={8} />
+                </Picker>
+
+
 
                 <TouchableOpacity onPress={() => navigation.navigate("config")}>
                     <Text style={styles.btn}>Guardar</Text>
@@ -77,13 +78,13 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#fff",
     },
-    editPerfil:{
+    editPerfil: {
         display: 'inline',
         alignItems: 'flex-end'
 
     },
 
-    Icon:{
+    Icon: {
         Top: 50,
         right: 130,
     },
@@ -121,8 +122,20 @@ const styles = StyleSheet.create({
         width: "90%",
         padding: 10,
         fontSize: 16,
-        marginBottom: 20
+        marginBottom: 20,
+
     },
+
+    Pick: {
+        backgroundColor: "#DBDBDB",
+        padding: 10,
+        paddingLeft: 20,
+        width: "90%",
+        marginRight: "auto",
+        marginLeft: "auto",
+        fontSize: 18,
+    },
+
     btn: {
         backgroundColor: "#00C9D2",
         color: "#fff",
@@ -134,7 +147,7 @@ const styles = StyleSheet.create({
         height: 50,
         marginLeft: "auto",
         marginRight: "auto",
-        marginTop: 15,
+        marginTop: 40,
         borderRadius: 20,
         marginBottom: 20
     },

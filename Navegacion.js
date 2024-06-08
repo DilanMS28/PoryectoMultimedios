@@ -18,6 +18,8 @@ import Agendar from "./navegacion/agendar";
 import MenuButton from "./components/menuButton"
 import Config from './navegacion/config'
 import EditProfile from "./navegacion/editProfile";
+import MyData from "./navegacion/myData";
+
 
 
 //variable con la función stacknavigator
@@ -39,6 +41,8 @@ function Stacks() {
       <StackNav.Screen name="codigorecuperacion" component={CodigoRecuperacion}/>
       <StackNav.Screen name="nuevacontraseña" component={NuevaContraseña} />
       <StackNav.Screen name="crearcuenta" component={CrearCuenta} />
+      <StackNav.Screen name="editarPorfile" component={EditProfile} />
+      <StackNav.Screen name="misDatos" component={MyData} />
       <StackNav.Screen name="home" component={Drawers} />
     </StackNav.Navigator>
   );

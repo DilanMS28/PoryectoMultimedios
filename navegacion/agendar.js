@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Image, Text, TouchableOpacity, StyleSheet, TextInput} from "react-native";
-import {Picker} from "@react-native-picker/picker";
+import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from "@react-navigation/native";
 import { ScrollView } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -36,38 +36,38 @@ export default function Agendar() {
 
       <ScrollView>
 
-        <TouchableOpacity onPress={()=>navigation.goBack()}>
-            <MaterialCommunityIcons name="arrow-left" color={"black"} size={40} style={styles.flecha}/>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <MaterialCommunityIcons name="arrow-left" color={"black"} size={40} style={styles.flecha} />
         </TouchableOpacity>
 
         <Text style={styles.titulo}>Agendar</Text>
 
         <Text style={styles.label}>Titulo</Text>
-        <TextInput keyboardType="ascii-capable" placeholder="Titulo para agendar"  style={styles.inputTxt} underlineColor="transparent"></TextInput>
-        
+        <TextInput keyboardType="ascii-capable" placeholder="Titulo para agendar" style={styles.inputTxt} underlineColor="transparent"></TextInput>
+
         <Text style={styles.label}>Hora Inicio</Text>
-        <TextInput keyboardType="ascii-capable" placeholder="Hora de Inicio"  style={styles.inputTxt} underlineColor="transparent"></TextInput>
-        
+        <TextInput keyboardType="ascii-capable" placeholder="Hora de Inicio" style={styles.inputTxt} underlineColor="transparent"></TextInput>
+
         <Text style={styles.label}>Hora Fin</Text>
-        <TextInput keyboardType="ascii-capable" placeholder="Hora de Finalizacion"  style={styles.inputTxt} underlineColor="transparent"></TextInput>
-        
+        <TextInput keyboardType="ascii-capable" placeholder="Hora de Finalizacion" style={styles.inputTxt} underlineColor="transparent"></TextInput>
+
         <Text style={styles.label}>Recordar</Text>
         {/* <TextInput keyboardType="ascii-capable" placeholder="Recordar"  style={styles.inputTxt} underlineColor="transparent"> </TextInput> */}
         <Picker selectedValue={selectedValue} onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)} style={styles.inputTxt}>
-            <Picker.Item label="10 minutos antes" value={0}/>
-            <Picker.Item label="1 Día antes" value={1}/>
-            <Picker.Item label="2 Dias antes" value={2}/>
-            <Picker.Item label="1 Semana antes" value={3}/>
-            <Picker.Item label="15 Días antes" value={4}/>
+          <Picker.Item label="10 minutos antes" value={0} />
+          <Picker.Item label="1 Día antes" value={1} />
+          <Picker.Item label="2 Dias antes" value={2} />
+          <Picker.Item label="1 Semana antes" value={3} />
+          <Picker.Item label="15 Días antes" value={4} />
         </Picker>
 
         <Text style={styles.label}>Descripción</Text>
-        <TextInput keyboardType="ascii-capable" placeholder="Descripción detalla de la tarea a realizar"  style={styles.textArea} underlineColor="transparent"></TextInput>
-        
+        <TextInput keyboardType="ascii-capable" placeholder="Descripción detalla de la tarea a realizar" style={styles.textArea} underlineColor="transparent"></TextInput>
+
 
         <TouchableOpacity >
-        <Text style={styles.btninfo}>Calcular</Text>
-      </TouchableOpacity>
+          <Text style={styles.btninfo}>Agendar</Text>
+        </TouchableOpacity>
 
 
       </ScrollView>
@@ -76,10 +76,10 @@ export default function Agendar() {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-      },
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
   nav: {
     display: "flex",
     flexDirection: "row",
@@ -106,8 +106,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginTop: 20,
   },
-  inputTxt:{
-    backgroundColor:"#DBDBDB",
+  inputTxt: {
+    backgroundColor: "#DBDBDB",
     borderRadius: 10,
     padding: 10,
     paddingLeft: 20,
@@ -116,8 +116,8 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     fontSize: 18,
   },
-  textArea:{
-    backgroundColor:"#DBDBDB",
+  textArea: {
+    backgroundColor: "#DBDBDB",
     borderRadius: 10,
     padding: 10,
     paddingLeft: 20,
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     height: 100,
   },
-  txtTarjeta:{
+  txtTarjeta: {
     color: "#fff",
     fontSize: 18,
     fontWeight: "normal",
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     fontSize: 35,
     textAlign: "center",
   },
-//  
+  //  
   btninfo: {
     backgroundColor: "#BEEE3B",
     color: "#fff",
@@ -169,14 +169,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
 
-  imc:{
-    color: "#000",
-    fontSize: 18,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginTop: 20,
-  },
-  flecha:{
+  flecha: {
     marginLeft: 20,
     top: 40,
   }

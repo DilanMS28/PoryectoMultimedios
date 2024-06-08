@@ -5,13 +5,13 @@ import { ScrollView } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState, useRef } from "react";
 
-export default function Habitos() {
+export default function IMC() {
   //variable para guardar la navegación
   const navigation = useNavigation();
  
   //variables para los datos
-  const [peso, setPeso] = useState('');
-  const [altura, setAltura] = useState('');
+  const [peso, setPeso] = useState();
+  const [altura, setAltura] = useState();
   const [imc, setImc] = useState(0);
   const [estado, setEstado] = useState()
   const inputRefaltura = useRef(null)
@@ -44,7 +44,6 @@ export default function Habitos() {
     const imcCalculado = calcularIMC(parseFloat(peso), parseFloat(altura));
     setImc(imcCalculado);
     tabla(imcCalculado);
-    clear()
   };
 
   return (
@@ -76,8 +75,8 @@ export default function Habitos() {
         <Text style={styles.txt}>Calcula tu Indice de Masa Corporal</Text>
 
         <Text style={styles.label}>Estatura</Text>
-        <TextInput keyboardType="numeric" placeholder="Estatura en cm"  style={styles.inputTxt} underlineColor="transparent" onChangeText={(value)=>setAltura(value)} value={altura} ref={inputRefaltura}> </TextInput>
-        
+        <TextInput keyboardType="numeric" placeholder="Estatura en cm"  style={styles.inputTxt} underlineColor="transparent" onChangeText={(value)=>setAltura(value)} value={altura} ref={inputRefpeso}></TextInput> 
+
         <Text style={styles.label}>Peso</Text>
         <TextInput keyboardType="numeric" placeholder="Peso en kg"  style={styles.inputTxt} underlineColor="transparent" onChangeText={(value)=>setPeso(value)} value={peso} ref={inputRefpeso}></TextInput>
 
