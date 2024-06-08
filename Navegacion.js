@@ -56,7 +56,6 @@ function Drawers() {
       <DrawerNav.Screen name="habitos" component={Habitos} options={{drawerLabel:"Habitos Saludables"}} />
       <DrawerNav.Screen name="imc" component={IMC} options={{drawerLabel:"Indice Masa Corporal"}}/>
       <DrawerNav.Screen name="rutinas" component={Rutinas} options={{drawerLabel:"Rutina de Ejercicios"}}/>
-      {/* <DrawerNav.Screen name="calendario" component={EditProfile} options={{drawerLabel:"Calendario"}} /> */}
       <DrawerNav.Screen name="config" component={Config}  options={{drawerLabel:"Configuraciones"}}/>
       
     </DrawerNav.Navigator>
