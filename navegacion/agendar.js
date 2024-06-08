@@ -1,51 +1,16 @@
 import React from "react";
 import { View, Image, Text, TouchableOpacity, StyleSheet, TextInput} from "react-native";
+import {Picker} from "@react-native-picker/picker";
 import { useNavigation } from "@react-navigation/native";
 import { ScrollView } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useState, useRef } from "react";
+import { useState } from "react";
 
-export default function Habitos() {
+export default function Agendar() {
   //variable para guardar la navegación
   const navigation = useNavigation();
- 
-  //variables para los datos
-  const [peso, setPeso] = useState('');
-  const [altura, setAltura] = useState('');
-  const [imc, setImc] = useState(0);
-  const [estado, setEstado] = useState()
-  const inputRefaltura = useRef(null)
-  const inputRefpeso = useRef(null)
+  const [selectedValue, setSelectedValue] = useState(0);
 
-  function calcularIMC(peso, altura) {
-    const alturaEnMetros = altura / 100;
-    const imc = peso / (alturaEnMetros * alturaEnMetros);
-    return imc;
-  }
-
-  function clear(){
-    inputRefaltura.current.clear();
-    // inputRefpeso.current.clear();
-  }
-
-  function tabla(imc){
-    if(imc < 18.5){
-      setEstado("Peso inferior al normal")
-    }else if(18.5 <= imc && imc < 24.9){
-      setEstado("Normal")
-    }else if(24.9 <= imc && imc <29.9){
-      setEstado("Peso superior al normal")
-    }else if(imc>= 30.0){
-      setEstado("Obesidad")
-    }
-  }
-
-  const handleCalcular = () => {
-    const imcCalculado = calcularIMC(parseFloat(peso), parseFloat(altura));
-    setImc(imcCalculado);
-    tabla(imcCalculado);
-    clear()
-  };
 
   return (
     <View style={styles.container}>
@@ -56,7 +21,6 @@ export default function Habitos() {
             fontSize={10}
             color={"white"}
             size={40}
-            style={styles.flecha}
           />
         </TouchableOpacity>
         <Text style={styles.tituloheader}>Salud y Bienestar</Text>
@@ -71,26 +35,40 @@ export default function Habitos() {
       </View>
 
       <ScrollView>
-        <Text style={styles.titulo}>Calculadora IMC</Text>
 
-        <Text style={styles.txt}>Calcula tu Indice de Masa Corporal</Text>
+        <TouchableOpacity onPress={()=>navigation.goBack()}>
+            <MaterialCommunityIcons name="arrow-left" color={"black"} size={40} style={styles.flecha}/>
+        </TouchableOpacity>
 
-        <Text style={styles.label}>Estatura</Text>
-        <TextInput keyboardType="numeric" placeholder="Estatura en cm"  style={styles.inputTxt} underlineColor="transparent" onChangeText={(value)=>setAltura(value)} value={altura} ref={inputRefaltura}> </TextInput>
+        <Text style={styles.titulo}>Agendar</Text>
+
+        <Text style={styles.label}>Titulo</Text>
+        <TextInput keyboardType="ascii-capable" placeholder="Titulo para agendar"  style={styles.inputTxt} underlineColor="transparent"></TextInput>
         
-        <Text style={styles.label}>Peso</Text>
-        <TextInput keyboardType="numeric" placeholder="Peso en kg"  style={styles.inputTxt} underlineColor="transparent" onChangeText={(value)=>setPeso(value)} value={peso} ref={inputRefpeso}></TextInput>
+        <Text style={styles.label}>Hora Inicio</Text>
+        <TextInput keyboardType="ascii-capable" placeholder="Hora de Inicio"  style={styles.inputTxt} underlineColor="transparent"></TextInput>
+        
+        <Text style={styles.label}>Hora Fin</Text>
+        <TextInput keyboardType="ascii-capable" placeholder="Hora de Finalizacion"  style={styles.inputTxt} underlineColor="transparent"></TextInput>
+        
+        <Text style={styles.label}>Recordar</Text>
+        {/* <TextInput keyboardType="ascii-capable" placeholder="Recordar"  style={styles.inputTxt} underlineColor="transparent"> </TextInput> */}
+        <Picker selectedValue={selectedValue} onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)} style={styles.inputTxt}>
+            <Picker.Item label="10 minutos antes" value={0}/>
+            <Picker.Item label="1 Día antes" value={1}/>
+            <Picker.Item label="2 Dias antes" value={2}/>
+            <Picker.Item label="1 Semana antes" value={3}/>
+            <Picker.Item label="15 Días antes" value={4}/>
+        </Picker>
 
-        <TouchableOpacity onPress={handleCalcular}>
+        <Text style={styles.label}>Descripción</Text>
+        <TextInput keyboardType="ascii-capable" placeholder="Descripción detalla de la tarea a realizar"  style={styles.textArea} underlineColor="transparent"></TextInput>
+        
+
+        <TouchableOpacity >
         <Text style={styles.btninfo}>Calcular</Text>
       </TouchableOpacity>
 
-      <Text style={styles.titulo}>Resultado</Text>
-      <View style={styles.resultado}>
-        {/* {imc && <Text>IMC: {imc.toFixed(2)} </Text>} */}
-        <Text style={styles.imc}>IMC: {imc.toFixed(2)} {'\n\n'} Estado: {estado} </Text>
-        {/* <Text style={styles.imc}>Estado: {estado} </Text> */}
-      </View>
 
       </ScrollView>
     </View>
@@ -138,6 +116,17 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     fontSize: 18,
   },
+  textArea:{
+    backgroundColor:"#DBDBDB",
+    borderRadius: 10,
+    padding: 10,
+    paddingLeft: 20,
+    width: "90%",
+    marginRight: "auto",
+    marginLeft: "auto",
+    fontSize: 18,
+    height: 100,
+  },
   txtTarjeta:{
     color: "#fff",
     fontSize: 18,
@@ -163,7 +152,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 35,
     textAlign: "center",
-    marginTop: 40,
   },
 //  
   btninfo: {
@@ -181,21 +169,15 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
 
-  resultado:{
-    backgroundColor: "#DBDBDB",
-    width: "90%",
-    marginRight: "auto",
-    marginLeft: "auto",
-    padding: 20,
-    borderRadius: 20,
-    height: 150,
-    marginTop: 5,
-  },
   imc:{
     color: "#000",
     fontSize: 18,
     fontWeight: "bold",
     textAlign: "center",
     marginTop: 20,
+  },
+  flecha:{
+    marginLeft: 20,
+    top: 40,
   }
 }); //cierre de la hoja de stilos
