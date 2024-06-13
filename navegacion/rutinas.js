@@ -22,7 +22,7 @@ export default function Habitos() {
         </TouchableOpacity>
         <Text style={styles.tituloheader}>Salud y Bienestar</Text>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={()=>navigation.navigate("config")}>
           <Image
             source={require("../assets/imagenes/perfile.png")}
             resizeMode="center"

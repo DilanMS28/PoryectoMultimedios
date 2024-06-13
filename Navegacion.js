@@ -19,6 +19,7 @@ import MenuButton from "./components/menuButton"
 import Config from './navegacion/config'
 import EditProfile from "./navegacion/editProfile";
 import MyData from "./navegacion/myData";
+import ActualizarCita from "./navegacion/actualizarCita";
 
 
 
@@ -61,7 +62,7 @@ function Drawers() {
       <DrawerNav.Screen name="habitos" component={Habitos} options={{drawerLabel:"Habitos Saludables"}} />
       <DrawerNav.Screen name="imc" component={IMC} options={{drawerLabel:"Indice Masa Corporal"}}/>
       <DrawerNav.Screen name="rutinas" component={Rutinas} options={{drawerLabel:"Rutina de Ejercicios"}}/>
-      <DrawerNav.Screen name="calendario" component={Agendar} options={{drawerLabel:"Calendario"}} />
+      <DrawerNav.Screen name="calendario" component={ActualizarCita} options={{drawerLabel:"Calendario"}} />
       <DrawerNav.Screen name="config" component={Config}  options={{drawerLabel:"Configuraciones"}}/>
       
     </DrawerNav.Navigator>

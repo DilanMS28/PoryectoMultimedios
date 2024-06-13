@@ -33,7 +33,7 @@ export default function MyData() {
                 <Text style={styles.Tittle}>Peso</Text>
                 <TextInput
                     keyboardType="numeric"
-                    placeholder="Tu peso en Kg::"
+                    placeholder="Tu peso en Kg:"
                     style={styles.inputTxt}
                     underlineColor="transparent"
                 ></TextInput>

@@ -13,19 +13,12 @@ export default function IMC() {
   const [peso, setPeso] = useState();
   const [altura, setAltura] = useState();
   const [imc, setImc] = useState(0);
-  const [estado, setEstado] = useState()
-  const inputRefaltura = useRef(null)
-  const inputRefpeso = useRef(null)
+  const [estado, setEstado] = useState();
 
   function calcularIMC(peso, altura) {
     const alturaEnMetros = altura / 100;
     const imc = peso / (alturaEnMetros * alturaEnMetros);
     return imc;
-  }
-
-  function clear(){
-    inputRefaltura.current.clear();
-    // inputRefpeso.current.clear();
   }
 
   function tabla(imc){
@@ -44,6 +37,8 @@ export default function IMC() {
     const imcCalculado = calcularIMC(parseFloat(peso), parseFloat(altura));
     setImc(imcCalculado);
     tabla(imcCalculado);
+    setAltura("")
+    setPeso("")
   };
 
   return (
@@ -60,7 +55,7 @@ export default function IMC() {
         </TouchableOpacity>
         <Text style={styles.tituloheader}>Salud y Bienestar</Text>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={()=>navigation.navigate("config")}>
           <Image
             source={require("../assets/imagenes/perfile.png")}
             resizeMode="center"
@@ -75,10 +70,10 @@ export default function IMC() {
         <Text style={styles.txt}>Calcula tu Indice de Masa Corporal</Text>
 
         <Text style={styles.label}>Estatura</Text>
-        <TextInput keyboardType="numeric" placeholder="Estatura en cm"  style={styles.inputTxt} underlineColor="transparent" onChangeText={(value)=>setAltura(value)} value={altura} ref={inputRefpeso}></TextInput> 
+        <TextInput keyboardType="numeric" placeholder="Estatura en cm"  style={styles.inputTxt} underlineColor="transparent" onChangeText={(value)=>setAltura(value)} value={altura}></TextInput> 
 
         <Text style={styles.label}>Peso</Text>
-        <TextInput keyboardType="numeric" placeholder="Peso en kg"  style={styles.inputTxt} underlineColor="transparent" onChangeText={(value)=>setPeso(value)} value={peso} ref={inputRefpeso}></TextInput>
+        <TextInput keyboardType="numeric" placeholder="Peso en kg"  style={styles.inputTxt} underlineColor="transparent" onChangeText={(value)=>setPeso(value)} value={peso}></TextInput>
 
         <TouchableOpacity onPress={handleCalcular}>
         <Text style={styles.btninfo}>Calcular</Text>
