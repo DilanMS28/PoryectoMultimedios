@@ -47,7 +47,7 @@ export default function Agendar() {
           <MaterialCommunityIcons name="arrow-left" color={"black"} size={40} style={{marginTop: 20, top:20, right: 100}} />
         </TouchableOpacity>
 
-        <Text style={styles.titulo}>Agendar</Text>
+        <Text style={styles.titulo}>Editar</Text>
       </View>
 
         <Text style={styles.label}>Titulo</Text>

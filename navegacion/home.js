@@ -19,7 +19,7 @@ export default function Login() {
         </TouchableOpacity>
         <Text style={styles.tituloheader}>Salud y Bienestar</Text>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={()=>navigation.navigate("config")}>
           <Image source={require("../assets/imagenes/perfile.png")} resizeMode="center" style={{width:50, height:50}}/>
         </TouchableOpacity>
       </View>
