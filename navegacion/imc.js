@@ -25,7 +25,7 @@ export default function IMC() {
 
   function clear(){
     inputRefaltura.current.clear();
-    // inputRefpeso.current.clear();
+    inputRefpeso.current.clear();
   }
 
   function tabla(imc){
