@@ -13,42 +13,12 @@ import { useNavigation } from "@react-navigation/native";
 import { ScrollView } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
-// import DatePicker from "react-native-date-picker";
-import DateTimePicker from "@react-native-community/datetimepicker";
 
-export default function Agendar() {
+export default function Calendario() {
   //variable para guardar la navegación
   const navigation = useNavigation();
   const [selectedValue, setSelectedValue] = useState(0);
 
-  //variables para los formatos de las fechas
-  const [openIncio, setOpenInicio] = useState(false);
-  const [openFin, setOpenFin] = useState(false);
-  const [dateInicio, setDateInicio] = useState(new Date());
-  const [dateFin, setDateFin] = useState(new Date());
-  // const [fechaFormato, setFechaFormato] = useState("");
-
-  // const formatFecha = (fecha) => {
-  //   const dia = fecha.getDate();
-  //   const mes = fecha.getMonth() + 1; // Los meses comienzan en 0
-  //   const anio = fecha.getFullYear();
-  //   setFechaFormato(`${dia}/${mes}/${anio}`);
-  // };
-
-  const handleDateChangeInicio = (selectedDate) => {
-    setOpenInicio(false);
-    if (selectedDate) {
-      setDateInicio(selectedDate);
-    }
-  };
-  const handleDateChangeFin = (selectedDate) => {
-    setOpenFin(false);
-    if (selectedDate) {
-      setDateFin(selectedDate);
-    }
-  };
-
-  //guardar todos los datos de cada uno de los campos
 
   return (
     <View style={styles.container}>
@@ -91,7 +61,7 @@ export default function Agendar() {
             />
           </TouchableOpacity>
 
-          <Text style={styles.titulo}>Agendar</Text>
+          <Text style={styles.titulo}>Calendario</Text>
         </View>
 
         <Text style={styles.label}>Titulo</Text>

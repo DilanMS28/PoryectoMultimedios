@@ -13,24 +13,39 @@ import { useNavigation } from "@react-navigation/native";
 import { ScrollView } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
-import DatePicker from "react-native-date-picker";
+// import DatePicker from "react-native-date-picker";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
-
-export default function Agendar() {
+export default function ActualizarCita() {
   //variable para guardar la navegación
   const navigation = useNavigation();
   const [selectedValue, setSelectedValue] = useState(0);
 
   //variables para los formatos de las fechas
-  const [open, setOpen] = useState(true);
-  const [date, setDate] = useState( new Date() );
-  const [fechaFormato, setFechaFormato] = useState("");
+  const [openIncio, setOpenInicio] = useState(false);
+  const [openFin, setOpenFin] = useState(false);
+  const [dateInicio, setDateInicio] = useState(new Date());
+  const [dateFin, setDateFin] = useState(new Date());
+  // const [fechaFormato, setFechaFormato] = useState("");
 
-  const formatFecha = (fecha) => {
-    const dia = fecha.getDate();
-    const mes = fecha.getMonth() + 1; // Los meses comienzan en 0
-    const anio = fecha.getFullYear();
-    setFechaFormato(`${dia}/${mes}/${anio}`);
+  // const formatFecha = (fecha) => {
+  //   const dia = fecha.getDate();
+  //   const mes = fecha.getMonth() + 1; // Los meses comienzan en 0
+  //   const anio = fecha.getFullYear();
+  //   setFechaFormato(`${dia}/${mes}/${anio}`);
+  // };
+
+  const handleDateChangeInicio = (event, selectedDate) => {
+    setOpenInicio(false);
+    if (selectedDate) {
+      setDateInicio(selectedDate);
+    }
+  };
+  const handleDateChangeFin = (event, selectedDate) => {
+    setOpenFin(false);
+    if (selectedDate) {
+      setDateFin(selectedDate);
+    }
   };
 
   //guardar todos los datos de cada uno de los campos
@@ -87,40 +102,39 @@ export default function Agendar() {
           underlineColor="transparent"
         ></TextInput>
 
-
-
-        <TouchableOpacity onPress={()=> setOpen(true)}>
+        <TouchableOpacity onPress={() => setOpenInicio(true)}>
           <Text style={styles.label}>Hora Inicio</Text>
+
+          {openIncio && (
+            <DateTimePicker
+              value={dateInicio}
+              mode="time"
+              display="clock"
+              onChange={handleDateChangeInicio}
+            />
+          )}
+
+          <Text style={styles.inputTxt}>Hora: {dateInicio.getHours()} Minutos: {dateInicio.getMinutes()}</Text>
         </TouchableOpacity>
 
-          <Text style={styles.label}>{open}buenas</Text>
+        <TouchableOpacity onPress={() => setOpenFin(true)}>
+          <Text style={styles.label}>Hora Fin</Text>
+
+          {openFin && (
+            <DateTimePicker
+              value={dateFin}
+              mode="time"
+              display="clock"
+              onChange={handleDateChangeFin}
+            />
+          )}
+
+          <Text style={styles.inputTxt}>Hora: {dateFin.getHours()} Minutos: {dateFin.getMinutes()}</Text>
+        </TouchableOpacity>
+      
+
+
         
-
-        {/* <Button onPress={() => {setOpen(true)} } title="Abrir Modal"/> */}
-        {/* <TextInput
-          keyboardType="ascii-capable"
-          placeholder="Hora de Inicio"
-          style={styles.inputTxt}
-          underlineColor="transparent"
-          
-        ></TextInput> */}
-
-        <DatePicker
-            modal
-            open={open}
-            mode="date"
-            date={date}
-            onConfirm={ newDate => {setOpen(false); formatFecha(newDate);}}
-            onCancel={() => {setOpen(false);}}
-        />
-
-        <Text style={styles.label}>Hora Fin</Text>
-        <TextInput
-          keyboardType="ascii-capable"
-          placeholder="Hora de Finalizacion"
-          style={styles.inputTxt}
-          underlineColor="transparent"
-        ></TextInput>
 
         <Text style={styles.label}>Recordar</Text>
         {/* <TextInput keyboardType="ascii-capable" placeholder="Recordar"  style={styles.inputTxt} underlineColor="transparent"> </TextInput> */}
