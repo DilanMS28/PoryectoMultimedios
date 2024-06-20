@@ -13,12 +13,13 @@ import { useNavigation } from "@react-navigation/native";
 import { ScrollView } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
+import { Calendar, LocaleConfig } from "react-native-calendars";
 
 export default function Calendario() {
   //variable para guardar la navegación
   const navigation = useNavigation();
   const [selectedValue, setSelectedValue] = useState(0);
-
+  const [selected, setSelected] = useState(""); //la varible para el calendario
 
   return (
     <View style={styles.container}>
@@ -57,78 +58,26 @@ export default function Calendario() {
               name="arrow-left"
               color={"black"}
               size={40}
-              style={{ marginTop: 20, top: 20, right: 100 }}
+              style={{ marginTop: 20, top: 10, right: 80 }}
             />
           </TouchableOpacity>
 
           <Text style={styles.titulo}>Calendario</Text>
         </View>
 
-        <Text style={styles.label}>Titulo</Text>
-        <TextInput
-          keyboardType="ascii-capable"
-          placeholder="Titulo para agendar"
-          style={styles.inputTxt}
-          underlineColor="transparent"
-        ></TextInput>
-
-        <TouchableOpacity onPress={() => setOpenInicio(true)}>
-          <Text style={styles.label}>Hora Inicio</Text>
-
-          {openIncio && (
-            <DateTimePicker
-              value={dateInicio}
-              mode="time"
-              display="clock"
-              onChange={handleDateChangeInicio}
-            />
-          )}
-
-          <Text style={styles.inputTxt}>Hora: {dateInicio.getHours()} Minutos: {dateInicio.getMinutes()}</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => setOpenFin(true)}>
-          <Text style={styles.label}>Hora Fin</Text>
-
-          {openFin && (
-            <DateTimePicker
-              value={dateFin}
-              mode="time"
-              display="clock"
-              onChange={handleDateChangeFin}
-            />
-          )}
-
-          <Text style={styles.inputTxt}>Hora: {dateFin.getHours()} Minutos: {dateFin.getMinutes()}</Text>
-        </TouchableOpacity>
-      
-
-
-        
-
-        <Text style={styles.label}>Recordar</Text>
-        {/* <TextInput keyboardType="ascii-capable" placeholder="Recordar"  style={styles.inputTxt} underlineColor="transparent"> </TextInput> */}
-        <Picker
-          selectedValue={selectedValue}
-          onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
-          style={styles.inputTxt}
-        >
-          <Picker.Item label="10 minutos antes" value={0} />
-          <Picker.Item label="1 Día antes" value={1} />
-          <Picker.Item label="2 Dias antes" value={2} />
-          <Picker.Item label="1 Semana antes" value={3} />
-          <Picker.Item label="15 Días antes" value={4} />
-        </Picker>
-
-        <Text style={styles.label}>Descripción</Text>
-        <TextInput
-          keyboardType="ascii-capable"
-          placeholder="Descripción detalla de la tarea a realizar"
-          style={styles.textArea}
-          underlineColor="transparent"
-          multiline={true}
-          numberOfLines={5}
-        ></TextInput>
+          {/* para la aparición del calendario */}
+        <Calendar
+          onDayPress={(day) => {
+            setSelected(day.dateString);
+          }}
+          markedDates={{
+            [selected]: {
+              selected: true,
+              disableTouchEvent: true,
+              selectedDotColor: "orange",
+            },
+          }}
+        />
 
         <TouchableOpacity>
           <Text style={styles.btninfo}>Agendar</Text>
