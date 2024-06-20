@@ -54,14 +54,15 @@ export default function Calendario() {
           }}
         >
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <MaterialCommunityIcons
+            {/* <MaterialCommunityIcons
               name="arrow-left"
               color={"black"}
               size={40}
               style={{ marginTop: 20, top: 10, right: 80 }}
-            />
+            /> */}
           </TouchableOpacity>
 
+          <Text style={styles.titulo}>Calendario</Text>
           <Text style={styles.titulo}>Calendario</Text>
         </View>
 
