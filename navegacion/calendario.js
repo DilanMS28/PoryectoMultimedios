@@ -14,12 +14,16 @@ import { ScrollView } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import { Calendar, LocaleConfig } from "react-native-calendars";
+import { Checkbox } from 'react-native-paper';
+import CheckBox from '@react-native-community/checkbox';
+
 
 export default function Calendario() {
   //variable para guardar la navegación
   const navigation = useNavigation();
   const [selectedValue, setSelectedValue] = useState(0);
   const [selected, setSelected] = useState(""); //la varible para el calendario
+  const [isChecked, setIsChecked] = useState(false)
 
   return (
     <View style={styles.container}>
@@ -44,27 +48,8 @@ export default function Calendario() {
       </View>
 
       <ScrollView>
-        <View
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "row",
-            marginBottom: 20,
-          }}
-        >
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            {/* <MaterialCommunityIcons
-              name="arrow-left"
-              color={"black"}
-              size={40}
-              style={{ marginTop: 20, top: 10, right: 80 }}
-            /> */}
-          </TouchableOpacity>
-
           <Text style={styles.titulo}>Calendario</Text>
-          <Text style={styles.titulo}>Calendario</Text>
-        </View>
+          <Text style={styles.txt}>Aquí puedes agendar tus citas y otros</Text>
 
           {/* para la aparición del calendario */}
         <Calendar
@@ -80,8 +65,20 @@ export default function Calendario() {
           }}
         />
 
-        <TouchableOpacity>
-          <Text style={styles.btninfo}>Agendar</Text>
+        <Text style={styles.label}>Eventos</Text>
+
+        <View style={styles.contEvento}>
+          <View> 
+            <Checkbox sytle={styles.check} status={isChecked ? 'checked' : 'unchecked'} onPress={() => setIsChecked(!isChecked)}/>
+          </View>
+          <View style={styles.evento}>
+            <Text style={styles.txtEvento}>Cita médica de laboratorio</Text>
+          </View>
+        </View>
+
+        
+        <TouchableOpacity onPress={()=>navigation.navigate("agendar")}>
+          <Text style={styles.btninfo}>+ Agregar</Text>
         </TouchableOpacity>
       </ScrollView>
     </View>
@@ -115,9 +112,10 @@ const styles = StyleSheet.create({
     color: "#000",
     fontSize: 18,
     fontWeight: "bold",
-    textAlign: "center",
+    textAlign: "left",
     marginBottom: 10,
     marginTop: 20,
+    marginLeft: 30,
   },
   inputTxt: {
     backgroundColor: "#DBDBDB",
@@ -166,13 +164,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 35,
     textAlign: "center",
-    top: 20,
-    right: 20,
-    // marginLeft: 20,
+    marginTop: 20,
   },
   //
   btninfo: {
-    backgroundColor: "#BEEE3B",
+    backgroundColor: "#00C9D2",
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
@@ -189,5 +185,34 @@ const styles = StyleSheet.create({
   flecha: {
     marginLeft: 20,
     top: 40,
+  },
+  evento:{
+    backgroundColor: "#BEEE3B",
+    width: "90%",
+    borderRadius: 20,
+    marginRight: "auto",
+    marginLeft: "auto",
+    padding: 5
+  },
+  check: {
+    color: "#000",
+    backgroundColor: "#00C9D2",
+    marginLeft: 20,
+  },
+  contEvento:{
+    display:"flex", 
+    justifyContent:"center", 
+    alignItems:"center", 
+    flexDirection:"row", 
+    width:"90%",
+    marginRight: "auto",
+    marginLeft: "auto",
+  },
+  txtEvento:{
+    fontSize: 18,
+    fontWeight: "bold",
+    marginLeft: 10,
+    padding: 2,
+
   },
 }); //cierre de la hoja de stilos

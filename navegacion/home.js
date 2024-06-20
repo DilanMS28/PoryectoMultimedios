@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Image, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Image, Text, TouchableOpacity, StyleSheet, Linking } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { ScrollView } from "react-native-gesture-handler";
 import {MaterialCommunityIcons} from "@expo/vector-icons";
@@ -9,6 +9,25 @@ export default function Login() {
   const navigation = useNavigation();
   const objetivos = "https://www.un.org/sustainabledevelopment/es/2015/09/la-asamblea-general-adopta-la-agenda-2030-para-el-desarrollo-sostenible/"
   const salud = "https://www.un.org/sustainabledevelopment/es/health/"
+
+  async function linkPress(url) {
+    const supported = await Linking.canOpenURL(url);
+    if(supported){
+      await Linking.openURL(url);
+    }else{
+      alert("Link No se pudo abrir")
+    }
+  }
+  // const linkPress = async (url) =>{
+  //   const supported = await Linking.canOpenURL(url);
+
+  //   if(supported){
+  //     await Linking.canOpenURL(url);
+  //   }else{
+  //     alert("Link No se pudo abrir")
+  //   }
+  // }
+
 
   return (
     <View style={styles.container}>
@@ -40,10 +59,15 @@ export default function Login() {
             style={styles.img}
           />
         </View>
-
+{/* 
         <TouchableOpacity onPress={()=>navigation.navigate("login")}>
           <Text style={styles.btninfo}>+ Más Información</Text>
+        </TouchableOpacity> */}
+
+        <TouchableOpacity onPress={()=>linkPress(objetivos)}>
+          <Text style={styles.btninfo}>+ Más Información</Text>
         </TouchableOpacity>
+
 
         <View style={styles.division} />
 
@@ -59,7 +83,7 @@ export default function Login() {
           contrarrestar los desafíos en la salud.
         </Text>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={()=>linkPress(salud)}>
           <Text style={styles.btninfo}>+ Más Información</Text>
         </TouchableOpacity>
 

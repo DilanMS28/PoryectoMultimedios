@@ -46,6 +46,8 @@ function Stacks() {
       <StackNav.Screen name="editarPorfile" component={EditProfile} />
       <StackNav.Screen name="misDatos" component={MyData} />
       <StackNav.Screen name="home" component={Drawers} />
+      <StackNav.Screen name="agendar" component={Agendar} />
+      <StackNav.Screen name="actualizarCita" component={ActualizarCita} />
     </StackNav.Navigator>
   );
 }
