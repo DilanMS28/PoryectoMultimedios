@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { Image, View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import React, { useState, useEffect } from 'react';
+import { View, Image, TouchableOpacity, StyleSheet, Alert, Text, ScrollView } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 import Collapsible from 'react-native-collapsible';
-import { ScrollView } from 'react-native-gesture-handler';
+import * as ImagePicker from 'expo-image-picker';
 
 const dataP = [
   { nombre: 'Nombre: Juanito' },
@@ -28,41 +28,87 @@ const NS = [
   { Complicado: 'No sé como qué poner aquí' }
 ];
 
-
 export default function Config() {
-  // para navegar
   const navigation = useNavigation();
-
-  // para lista despleglable
-
   const [collapsed, setCollapsed] = useState(true);
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permiso denegado', 'Se necesita permiso para acceder a la galería.');
+      }
+    })();
+  }, []);
+
+  const handlePickImage = async () => {
+    try {
+      const { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permiso denegado', 'Se necesita permiso para acceder a la galería.');
+        return;
+      }
+
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
+
+      if (result.canceled) {
+        console.log('Selección de imagen cancelada');
+      } else if (result.assets && result.assets.length > 0) {
+        const uri = result.assets[0].uri;
+        setSelectedImage(uri);
+
+      } else {
+        Alert.alert('Error', 'No se recibió la URI de la imagen seleccionada.');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'No se pudo seleccionar la imagen.');
+
+    }
+  };
 
   const toggleExpanded = () => {
     setCollapsed(!collapsed);
   };
-  return (
 
+  return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => navigation.navigate("inicio")}>
         <MaterialCommunityIcons name="arrow-left" color={"black"} size={40} style={{ marginTop: 42, marginLeft: 10 }} />
       </TouchableOpacity>
       <ScrollView>
-        <View >
+        <View>
           <View style={styles.editPerfil}>
-
-            <MaterialCommunityIcons name="plus-circle" color={'#BEEE3B'} size={40} style={styles.Icon} />
-            <Image source={require('../assets/imagenes/perfile.png')} style={{ width: 150, height: 150, marginLeft: 'auto', marginRight: 'auto', bottom: 35, zIndex: -1 }} />
-
+            <MaterialCommunityIcons
+              onPress={handlePickImage}
+              name="plus-circle"
+              color={'#BEEE3B'}
+              size={40}
+              style={styles.Icon}
+            />
+            {selectedImage ? (
+              <Image
+                source={{ uri: selectedImage }}
+                style={{ width: 150, height: 150, marginLeft: 'auto', marginRight: 'auto', bottom: 35, zIndex: -1, borderRadius: 75 }}
+              />
+            ) : (
+              <Image
+                source={require('../assets/imagenes/perfile.png')}
+                style={{ width: 150, height: 150, marginLeft: 'auto', marginRight: 'auto', bottom: 35, zIndex: -1, borderRadius: 75 }}
+              />
+            )}
           </View>
         </View>
-        <Text style={styles.Confi}> Configuraciones</Text>
+        <Text style={styles.Confi}>Configuraciones</Text>
         <View style={styles.Line} />
 
-        {/* se agregas los espacios con las listas desplegables */}
-        {/* Informacion Personal */}
         <View>
-          {/* Informacion Personal */}
-          <View style={{ bottom: 10 }} >
+          <View style={{ bottom: 10 }}>
             <TouchableOpacity onPress={toggleExpanded} style={{ top: 30 }}>
               <View style={styles.toggleContain}>
                 <MaterialCommunityIcons
@@ -75,8 +121,6 @@ export default function Config() {
                 <Text style={styles.toggleinfo}>Informacion Personal</Text>
               </View>
             </TouchableOpacity>
-
-            {/* Despliege de la info */}
             <Collapsible collapsed={collapsed} align="center">
               <View>
                 {dataP.map((item, index) => (
@@ -86,7 +130,6 @@ export default function Config() {
             </Collapsible>
           </View>
 
-          {/* Mis datos */}
           <View style={{ bottom: 10 }}>
             <TouchableOpacity onPress={toggleExpanded} style={{ top: 30 }}>
               <View style={styles.toggleContain}>
@@ -100,8 +143,6 @@ export default function Config() {
                 <Text style={styles.toggleinfo}>Mis datos</Text>
               </View>
             </TouchableOpacity>
-
-            {/* Despliege de la info */}
             <Collapsible collapsed={collapsed} align="center">
               <View>
                 {dataM.map((item, index) => (
@@ -111,7 +152,6 @@ export default function Config() {
             </Collapsible>
           </View>
 
-          {/* Dispositivos */}
           <View style={{ bottom: 10 }}>
             <TouchableOpacity onPress={toggleExpanded} style={{ top: 30 }}>
               <View style={styles.toggleContain}>
@@ -125,8 +165,6 @@ export default function Config() {
                 <Text style={styles.toggleinfo}>Dispositivos</Text>
               </View>
             </TouchableOpacity>
-
-            {/* Despliege de la info */}
             <Collapsible collapsed={collapsed} align="center">
               <View>
                 {dataDP.map((item, index) => (
@@ -136,7 +174,6 @@ export default function Config() {
             </Collapsible>
           </View>
 
-          {/* Seguridad */}
           <View style={{ bottom: 10 }}>
             <TouchableOpacity onPress={toggleExpanded} style={{ top: 30 }}>
               <View style={styles.toggleContain}>
@@ -150,8 +187,6 @@ export default function Config() {
                 <Text style={styles.toggleinfo}>Seguridad</Text>
               </View>
             </TouchableOpacity>
-
-            {/* Despliege de la info */}
             <Collapsible collapsed={collapsed} align="center">
               <View>
                 {NS.map((item, index) => (
@@ -161,7 +196,6 @@ export default function Config() {
             </Collapsible>
           </View>
 
-          {/* Accesibilidad */}
           <View style={{ bottom: 10 }}>
             <TouchableOpacity onPress={toggleExpanded} style={{ top: 30 }}>
               <View style={styles.toggleContain}>
@@ -175,8 +209,6 @@ export default function Config() {
                 <Text style={styles.toggleinfo}>Accesibilidad</Text>
               </View>
             </TouchableOpacity>
-
-            {/* Despliege de la info */}
             <Collapsible collapsed={collapsed} align="center">
               <View>
                 {NS.map((item, index) => (
@@ -190,11 +222,9 @@ export default function Config() {
           <Text style={styles.btn}>Cerrar Sesión</Text>
         </TouchableOpacity>
       </ScrollView>
-    </View >
-
+    </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -270,6 +300,6 @@ const styles = StyleSheet.create({
     marginTop: 40,
     borderRadius: 20,
     marginBottom: 20
-},
+  },
 
 });

@@ -20,15 +20,6 @@ export default function IMC() {
     const imc = peso / (alturaEnMetros * alturaEnMetros);
     return imc;
   }
-
-<<<<<<< HEAD
-  function clear(){
-    inputRefaltura.current.clear();
-    inputRefpeso.current.clear();
-  }
-
-=======
->>>>>>> 13939408cc593e9b92de58e30ba510c5e120cc8a
   function tabla(imc){
     if(imc < 18.5){
       setEstado("Peso inferior al normal")

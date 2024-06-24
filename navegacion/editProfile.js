@@ -1,12 +1,55 @@
+import React, {useEffect, useState} from "react";
 import { Image, View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import * as ImagePicker from 'expo-image-picker';
 
 
 
 export default function EditProfile() {
 
     const navigation = useNavigation();
+
+    const [selectedImage, setSelectedImage] = useState(null);
+
+    useEffect(() => {
+        (async () => {
+            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+            if (status !== 'granted') {
+                Alert.alert('Permiso denegado', 'Se necesita permiso para acceder a la galería.');
+            }
+        })();
+    }, []);
+
+    const handlePickImage = async () => {
+        try {
+            const { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
+            if (status !== 'granted') {
+                Alert.alert('Permiso denegado', 'Se necesita permiso para acceder a la galería.');
+                return;
+            }
+
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                aspect: [1, 1],
+                quality: 1,
+            });
+
+            if (result.canceled) {
+                console.log('Selección de imagen cancelada');
+            } else if (result.assets && result.assets.length > 0) {
+                const uri = result.assets[0].uri;
+                setSelectedImage(uri);
+
+            } else {
+                Alert.alert('Error', 'No se recibió la URI de la imagen seleccionada.');
+            }
+        } catch (error) {
+            Alert.alert('Error', 'No se pudo seleccionar la imagen.');
+
+        }
+    };
 
     return (
 
@@ -19,11 +62,24 @@ export default function EditProfile() {
 
             <ScrollView>
                 <View style={styles.editPerfil}>
-
-                    <MaterialCommunityIcons name="plus-circle" color={'#BEEE3B'} size={40} style={styles.Icon}/>
-
-                    <Image source={require('../assets/imagenes/perfile.png')} style={{ width: 150, height: 150, marginLeft: 'auto', marginRight: 'auto', bottom: 35, zIndex: -1 }} />
-
+                    <MaterialCommunityIcons
+                        onPress={handlePickImage}
+                        name="plus-circle"
+                        color={'#BEEE3B'}
+                        size={40}
+                        style={styles.Icon}
+                    />
+                    {selectedImage ? (
+                        <Image
+                            source={{ uri: selectedImage }}
+                            style={{ width: 150, height: 150, marginLeft: 'auto', marginRight: 'auto', bottom: 35, zIndex: -1, borderRadius: 75 }}
+                        />
+                    ) : (
+                        <Image
+                            source={require('../assets/imagenes/perfile.png')}
+                            style={{ width: 150, height: 150, marginLeft: 'auto', marginRight: 'auto', bottom: 35, zIndex: -1, borderRadius: 75 }}
+                        />
+                    )}
                 </View>
                 <Text style={styles.Edit}> Editar Perfil</Text>
                 <View style={styles.Line} />
@@ -77,13 +133,13 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#fff",
     },
-    editPerfil:{
+    editPerfil: {
         display: 'inline',
         alignItems: 'flex-end'
 
     },
 
-    Icon:{
+    Icon: {
         Top: 50,
         right: 130,
     },
