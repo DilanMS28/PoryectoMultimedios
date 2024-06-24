@@ -5,6 +5,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState, useRef } from "react";
 
+
 export default function IMC() {
   //variable para guardar la navegación
   const navigation = useNavigation();
@@ -14,6 +15,7 @@ export default function IMC() {
   const [altura, setAltura] = useState();
   const [imc, setImc] = useState(0);
   const [estado, setEstado] = useState();
+
 
   function calcularIMC(peso, altura) {
     const alturaEnMetros = altura / 100;

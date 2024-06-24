@@ -20,6 +20,7 @@ import Config from './navegacion/config'
 import EditProfile from "./navegacion/editProfile";
 import MyData from "./navegacion/myData";
 import ActualizarCita from "./navegacion/actualizarCita";
+import Calendario from "./navegacion/calendario";
 
 
 
@@ -46,6 +47,8 @@ function Stacks() {
       <StackNav.Screen name="editarPorfile" component={EditProfile} />
       <StackNav.Screen name="misDatos" component={MyData} />
       <StackNav.Screen name="home" component={Drawers} />
+      <StackNav.Screen name="agendar" component={Agendar} />
+      <StackNav.Screen name="actualizarCita" component={ActualizarCita} />
     </StackNav.Navigator>
   );
 }
@@ -63,7 +66,7 @@ function Drawers() {
       <DrawerNav.Screen name="habitos" component={Habitos} options={{drawerLabel:"Habitos Saludables"}} />
       <DrawerNav.Screen name="imc" component={IMC} options={{drawerLabel:"Indice Masa Corporal"}}/>
       <DrawerNav.Screen name="rutinas" component={Rutinas} options={{drawerLabel:"Rutina de Ejercicios"}}/>
-      <DrawerNav.Screen name="calendario" component={ActualizarCita} options={{drawerLabel:"Calendario"}} />
+      <DrawerNav.Screen name="calendario" component={Calendario} options={{drawerLabel:"Calendario"}} />
       <DrawerNav.Screen name="config" component={Config}  options={{drawerLabel:"Configuraciones"}}/>
       
     </DrawerNav.Navigator>
