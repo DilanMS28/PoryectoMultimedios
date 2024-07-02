@@ -22,7 +22,6 @@ export default function Chat(props) {
       method: 'GET',
       headers: {
         'x-Api-key': 'GGm8XffZzdqF1UCDq3w2pQ==WzFOocXvooogkguY',
-        // 'x-rapidapi-host': 'exercise-db-fitness-workout-gym.p.rapidapi.com'
       }
     };
 

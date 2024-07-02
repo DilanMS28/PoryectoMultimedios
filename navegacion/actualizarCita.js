@@ -1,39 +1,65 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
-  Image,
   Text,
   TouchableOpacity,
-  StyleSheet,
   TextInput,
-  Button,
+  Alert,
+  StyleSheet,
+  Image
 } from "react-native";
+import { useRoute, useNavigation } from "@react-navigation/native";
 import { Picker } from "@react-native-picker/picker";
-import { useNavigation } from "@react-navigation/native";
 import { ScrollView } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useState } from "react";
-// import DatePicker from "react-native-date-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
-export default function ActualizarCita() {
-  //variable para guardar la navegación
-  const navigation = useNavigation();
-  const [selectedValue, setSelectedValue] = useState(0);
+import { getFirestore, doc, getDoc, updateDoc,Timestamp  } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { app } from "../AccesoFirebase/accesoFirebase";
 
-  //variables para los formatos de las fechas
-  const [openIncio, setOpenInicio] = useState(false);
-  const [openFin, setOpenFin] = useState(false);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+export default function ActualizarCita() {
+  const navigation = useNavigation();
+  const route = useRoute();
+  const { eventId } = route.params;
+
+  const [selectedValue, setSelectedValue] = useState(0);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [dateInicio, setDateInicio] = useState(new Date());
   const [dateFin, setDateFin] = useState(new Date());
-  // const [fechaFormato, setFechaFormato] = useState("");
+  const [openInicio, setOpenInicio] = useState(false);
+  const [openFin, setOpenFin] = useState(false);
 
-  // const formatFecha = (fecha) => {
-  //   const dia = fecha.getDate();
-  //   const mes = fecha.getMonth() + 1; // Los meses comienzan en 0
-  //   const anio = fecha.getFullYear();
-  //   setFechaFormato(`${dia}/${mes}/${anio}`);
-  // };
+  useEffect(() => {
+    const fetchEventData = async () => {
+      try {
+        const user = auth.currentUser;
+        if (user) {
+          const uid = user.uid;
+          const eventRef = doc(db, "User", uid, "Agendar", eventId);
+          const eventDoc = await getDoc(eventRef);
+          if (eventDoc.exists()) {
+            const eventData = eventDoc.data();
+            setTitle(eventData.titulo || "");
+            setDescription(eventData.descripcion || "");
+            setDateInicio(new Date(eventData.dateInicio.seconds * 1000));
+            setDateFin(new Date(eventData.dateFin.seconds * 1000));
+            setSelectedValue(eventData.recordatorio || 0);
+          } else {
+            console.log("No existe ese documento!");
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching event data: ", error);
+      }
+    };
+
+    fetchEventData();
+  }, [eventId]);
 
   const handleDateChangeInicio = (event, selectedDate) => {
     setOpenInicio(false);
@@ -41,6 +67,7 @@ export default function ActualizarCita() {
       setDateInicio(selectedDate);
     }
   };
+
   const handleDateChangeFin = (event, selectedDate) => {
     setOpenFin(false);
     if (selectedDate) {
@@ -48,7 +75,30 @@ export default function ActualizarCita() {
     }
   };
 
-  //guardar todos los datos de cada uno de los campos
+  const handleUpdate = async () => {
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        const uid = user.uid;
+        const eventRef = doc(db, "User", uid, "Agendar", eventId);
+        await updateDoc(eventRef, {
+          titulo: title,
+          descripcion: description,
+          dateInicio: Timestamp.fromDate(dateInicio),
+          dateFin: Timestamp.fromDate(dateFin),
+          recordatorio: selectedValue,
+        });
+        Alert.alert(
+          "Cita actualizada",
+          "La cita ha sido actualizada correctamente."
+        );
+        navigation.goBack();
+      }
+    } catch (error) {
+      console.error("Error updating event: ", error);
+      Alert.alert("Error", "No se pudo actualizar la cita.");
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -62,7 +112,6 @@ export default function ActualizarCita() {
           />
         </TouchableOpacity>
         <Text style={styles.tituloheader}>Salud y Bienestar</Text>
-
         <TouchableOpacity onPress={() => navigation.navigate("config")}>
           <Image
             source={require("../assets/imagenes/perfile.png")}
@@ -82,78 +131,76 @@ export default function ActualizarCita() {
             marginBottom: 20,
           }}
         >
-
           <Text style={styles.titulo}>Editar</Text>
         </View>
 
-        <Text style={styles.label}>Titulo</Text>
+        <Text style={styles.label}>Título</Text>
         <TextInput
-          keyboardType="ascii-capable"
-          placeholder="Titulo para agendar"
+          value={title}
+          onChangeText={setTitle}
+          placeholder="Título para agendar"
           style={styles.inputTxt}
-          underlineColor="transparent"
-        ></TextInput>
+          underlineColorAndroid="transparent"
+        />
 
         <TouchableOpacity onPress={() => setOpenInicio(true)}>
           <Text style={styles.label}>Hora Inicio</Text>
-
-          {openIncio && (
+          <Text style={styles.inputTxt}>
+            {`${dateInicio.getHours()}h :${dateInicio.getMinutes()}m`}
+          </Text>
+          {openInicio && (
             <DateTimePicker
               value={dateInicio}
               mode="time"
-              display="clock"
+              is24Hour={true}
+              display="default"
               onChange={handleDateChangeInicio}
             />
           )}
-
-          <Text style={styles.inputTxt}>Hora: {dateInicio.getHours()} Minutos: {dateInicio.getMinutes()}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => setOpenFin(true)}>
           <Text style={styles.label}>Hora Fin</Text>
-
+          <Text style={styles.inputTxt}>
+            {`${dateFin.getHours()}h :${dateFin.getMinutes()}m`}
+          </Text>
           {openFin && (
             <DateTimePicker
               value={dateFin}
               mode="time"
-              display="clock"
+              is24Hour={true}
+              display="default"
               onChange={handleDateChangeFin}
             />
           )}
-
-          <Text style={styles.inputTxt}>Hora: {dateFin.getHours()} Minutos: {dateFin.getMinutes()}</Text>
         </TouchableOpacity>
-      
 
-
-        
-
-        <Text style={styles.label}>Recordar</Text>
-        {/* <TextInput keyboardType="ascii-capable" placeholder="Recordar"  style={styles.inputTxt} underlineColor="transparent"> </TextInput> */}
+        <Text style={styles.label}>Recordatorio</Text>
         <Picker
           selectedValue={selectedValue}
-          onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+          onValueChange={(itemValue) => setSelectedValue(itemValue)}
           style={styles.inputTxt}
         >
           <Picker.Item label="10 minutos antes" value={0} />
           <Picker.Item label="1 Día antes" value={1} />
-          <Picker.Item label="2 Dias antes" value={2} />
+          <Picker.Item label="2 Días antes" value={2} />
           <Picker.Item label="1 Semana antes" value={3} />
           <Picker.Item label="15 Días antes" value={4} />
         </Picker>
 
         <Text style={styles.label}>Descripción</Text>
         <TextInput
-          keyboardType="ascii-capable"
-          placeholder="Descripción detalla de la tarea a realizar"
-          style={styles.textArea}
-          underlineColor="transparent"
+          value={description}
+          onChangeText={setDescription}
+          placeholder="Descripción detallada de la tarea a realizar"
+          style={[styles.inputTxt, styles.textArea]}
+          underlineColorAndroid="transparent"
           multiline={true}
           numberOfLines={5}
-        ></TextInput>
+        />
 
-        <TouchableOpacity>
-          <Text style={styles.btninfo}>Agendar</Text>
+        <TouchableOpacity onPress={handleUpdate}>
+          <Text style={styles.btninfo}>Actualizar</Text>
         </TouchableOpacity>
       </ScrollView>
     </View>
@@ -166,17 +213,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   nav: {
-    display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    width: "100%",
     backgroundColor: "#00C9D2",
     height: 100,
     paddingTop: 40,
     paddingBottom: 10,
-    paddingRight: 10,
-    paddingLeft: 10,
+    paddingHorizontal: 10,
   },
   tituloheader: {
     fontSize: 20,
@@ -188,7 +232,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     textAlign: "center",
-    marginBottom: 20,
+    marginBottom: 10,
     marginTop: 10,
   },
   inputTxt: {
@@ -197,51 +241,20 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingLeft: 20,
     width: "90%",
-    marginRight: "auto",
-    marginLeft: "auto",
+    alignSelf: "center",
     fontSize: 18,
   },
   textArea: {
-    backgroundColor: "#DBDBDB",
-    borderRadius: 10,
-    padding: 10,
-    paddingLeft: 20,
-    width: "90%",
-    marginRight: "auto",
-    marginLeft: "auto",
-    fontSize: 18,
     height: 100,
     textAlignVertical: "top",
   },
-  txtTarjeta: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "normal",
-    textAlign: "justify",
-    lineHeight: 20,
-    padding: 5,
-    marginBottom: 10,
-  },
-  txt: {
-    color: "#484848",
-    fontWeight: "400",
-    fontSize: 18,
-    textAlign: "center",
-    marginBottom: 30,
-    marginRight: 20,
-    marginLeft: 20,
-    lineHeight: 25,
-  },
-
   titulo: {
     color: "#000",
     fontWeight: "bold",
     fontSize: 35,
     textAlign: "center",
-    marginTop: 20
-    // marginLeft: 20,
+    marginTop: 20,
   },
-  //
   btninfo: {
     backgroundColor: "#BEEE3B",
     color: "#fff",
@@ -251,14 +264,8 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     width: 180,
     height: 50,
-    marginLeft: "auto",
-    marginRight: "auto",
+    alignSelf: "center",
     marginTop: 20,
     borderRadius: 20,
   },
-
-  flecha: {
-    marginLeft: 20,
-    top: 40,
-  },
-}); //cierre de la hoja de stilos
+});

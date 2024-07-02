@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Alert 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { Picker } from "@react-native-picker/picker";
-import { getFirestore, doc, updateDoc } from "firebase/firestore";
+import { getFirestore, doc, updateDoc,getDoc } from "firebase/firestore";
 import { app, auth } from "../AccesoFirebase/accesoFirebase";
 
 const db = getFirestore(app);
@@ -12,38 +12,54 @@ export default function MyData() {
     const navigation = useNavigation();
     const [altura, setAltura] = useState('');
     const [peso, setPeso] = useState('');
-    const [horasSueño, setHorasSueño] = useState('');
+    const [horaSueño, setHoraSueño] = useState(''); 
     const [tipoSangre, setTipoSangre] = useState(0); 
     const [usuario, setUsuario] = useState(null);
 
     useEffect(() => {
-        // Verificar si Firebase está inicializado y el usuario está autenticado
-        const unsubscribe = auth.onAuthStateChanged((user) => {
-            if (user) {
-                setUsuario(user);
-            } else {
-                setUsuario(null);
+        const fetchUserData = async () => {
+            try {
+                const user = auth.currentUser;
+                if (!user) {
+                    throw new Error('Usuario no autenticado');
+                }
+                
+                const userDoc = await getDoc(doc(db, 'User', user.uid));
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+                    setAltura(userData.datos.altura || '');
+                    setPeso(userData.datos.peso || '');
+                    setHoraSueño(userData.datos.horaSueño || ''); 
+                    setTipoSangre(userData.datos.tipoSangre || 0);
+                    setUsuario(user); 
+                } else {
+                    throw new Error('No se encontraron datos de usuario');
+                }
+            } catch (error) {
+                console.error('Error al obtener datos de usuario:', error);
+                Alert.alert('Error', 'No se pudo obtener los datos del usuario.');
             }
-        });
-        return unsubscribe;
+        };
+
+        fetchUserData();
     }, []);
 
     const guardarDatos = async () => {
-        if (!usuario) {
-            Alert.alert('Error', 'No se ha podido obtener el usuario actual.');
-            return;
-        }
-
         try {
+            if (!usuario) {
+                throw new Error('Usuario no autenticado');
+            }
+
             // Actualizar los datos en Firestore
             await updateDoc(doc(db, 'User', usuario.uid), {
                 datos: {
                     altura: altura,
                     peso: peso,
-                    horaSueño: horasSueño,
+                    horaSueño: horaSueño,
                     tipoSangre: tipoSangre,
                 }
             });
+
             Alert.alert('Éxito', 'Datos actualizados correctamente.');
             navigation.navigate('config'); 
         } catch (error) {
@@ -88,8 +104,8 @@ export default function MyData() {
                     placeholder="Tus horas de sueño"
                     style={styles.inputTxt}
                     underlineColorAndroid="transparent"
-                    value={horasSueño}
-                    onChangeText={(text) => setHorasSueño(text)}
+                    value={horaSueño}
+                    onChangeText={(text) => setHoraSueño(text)}
                 />
 
                 <Text style={styles.Tittle}>Tipo de sangre</Text>
@@ -116,7 +132,6 @@ export default function MyData() {
         </View>
     );
 }
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,

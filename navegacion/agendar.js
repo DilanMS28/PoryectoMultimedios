@@ -54,8 +54,8 @@ export default function Agendar() {
         return;
       }
 
-      const userRef = doc(db, "User", user.uid); // Referencia al documento del usuario
-      const agendarRef = collection(userRef, "Agendar"); // Referencia a la subcolección 'Agendar' dentro del documento del usuario
+      const userRef = doc(db, "User", user.uid); 
+      const agendarRef = collection(userRef, "Agendar");
 
       await addDoc(agendarRef, {
         titulo,
@@ -63,7 +63,7 @@ export default function Agendar() {
         dateFin: `${dateFin.getHours()}h :${dateFin.getMinutes()}m`,
         recordatorio: selectedValue,
         descripcion,
-        selectedDate, // Asegúrate de que selectedDate esté disponible aquí
+        selectedDate, 
       });
 
       Alert.alert("Cita agendada exitosamente");

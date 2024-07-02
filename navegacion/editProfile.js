@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, ScrollView, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { auth, app } from "../AccesoFirebase/accesoFirebase";
-import { doc, getFirestore, updateDoc } from "firebase/firestore";
+import { doc, getFirestore, updateDoc, getDoc } from "firebase/firestore";
 import * as ImagePicker from 'expo-image-picker';
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
@@ -27,6 +27,35 @@ export default function EditProfile() {
         })();
     }, []);
 
+    useEffect(() => {
+        const cargarDatosUsuario = async () => {
+            try {
+                const user = auth.currentUser;
+                if (user) {
+                    const uid = user.uid;
+                    const userRef = doc(db, "User", uid);
+                    const docSnap = await getDoc(userRef);
+
+                    if (docSnap.exists()) {
+                        const userData = docSnap.data();
+                        setNombre(userData.nombre || '');
+                        setApellidos(userData.apellidos || '');
+                        setCorreo(userData.correo || '');
+                    } else {
+                        Alert.alert('Error', 'No se encontraron datos del usuario.');
+                    }
+                } else {
+                    Alert.alert('Error', 'No se encontró un usuario activo.');
+                }
+            } catch (error) {
+                console.error('Error al cargar datos de usuario:', error);
+                Alert.alert('Error', 'No se pudo cargar la información del usuario.');
+            }
+        };
+
+        cargarDatosUsuario();
+    }, []);
+
     const handlePickImage = async () => {
         try {
             const { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
@@ -42,7 +71,7 @@ export default function EditProfile() {
                 quality: 1,
             });
 
-            if (result.canceled) {
+            if (result.cancelled) {
                 console.log('Selección de imagen cancelada');
             } else if (result.assets && result.assets.length > 0) {
                 const uri = result.assets[0].uri;

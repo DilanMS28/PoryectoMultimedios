@@ -59,7 +59,7 @@ export default function Ejercicio(props) {
             <Text style={styles.ejTitulo}>{ejercicioId.name}</Text>
             <View style={{display:"flex", flexDirection: "row", justifyContent: "space-evenly"}}>
                 <Text style={[styles.txt, {color: TipoDificultad(ejercicioId.difficulty)}]}> <Text style={styles.label}>Dificultad: </Text>{ejercicioId.difficulty}</Text>
-                <Text style={styles.txt}> <Text style={styles.label}>Musculo: </Text>{ejercicioId.muscle}</Text>
+                <Text style={styles.txt}> <Text style={styles.label}>Músculo: </Text>{ejercicioId.muscle}</Text>
 
             </View>
             <Text style={styles.instructions}>{ejercicioId.instructions}</Text>
