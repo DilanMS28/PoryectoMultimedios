@@ -5,8 +5,6 @@ import { DrawerActions, useNavigation } from "@react-navigation/native";
 import { ScrollView } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-// https://v2.rapidapi.com/Alejandro99aru/api/exercise-db-fitness-workout-gym/
-// https://www.api-ninjas.com/api/exercises
 
 export default function Chat(props) {
   //variable para guardar la navegación
