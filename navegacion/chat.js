@@ -90,7 +90,7 @@ export default function Chat(props) {
 
             <FlatList
               data={data}
-              keyExtractor={({ id }) => id}
+              // keyExtractor={({ id }) => id}
               renderItem={({ item }) => (
                 <View style={styles.tarjeta}>
                   <Text style={[styles.response, {color: TipoDificultad(item.difficulty)} ]}> <Text style={styles.span}>Dificultad:</Text> {item.difficulty}</Text>

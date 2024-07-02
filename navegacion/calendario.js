@@ -176,7 +176,7 @@ export default function Calendario() {
                     onPress={() => aviso(event.id)}
                     name={"delete"}
                     size={30}
-                    color={"red"}
+                    color={"#ff4040"}
                     style={{ marginRight: 5 }}
                   />
                   <TouchableOpacity
