@@ -18,16 +18,6 @@ export default function Login() {
       alert("Link No se pudo abrir")
     }
   }
-  // const linkPress = async (url) =>{
-  //   const supported = await Linking.canOpenURL(url);
-
-  //   if(supported){
-  //     await Linking.canOpenURL(url);
-  //   }else{
-  //     alert("Link No se pudo abrir")
-  //   }
-  // }
-
 
   return (
     <View style={styles.container}>

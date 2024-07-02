@@ -45,7 +45,7 @@ export default function Habitos() {
 
             <Text style={styles.txtTarjeta}>Son aquellos que nos ayudan a mantenernos con energía durante el día</Text>
 
-            <TouchableOpacity onPress={() => navigation.navigate("login")}>
+            <TouchableOpacity >
                 <Text style={styles.btninfo}>Ver Hábitos</Text>
             </TouchableOpacity>
 
@@ -61,7 +61,7 @@ export default function Habitos() {
 
             <Text style={styles.txtTarjeta}>Son aquellos que nos ayudan a conciliar mejor el sueño y favorece la recuperación y el descanso</Text>
 
-            <TouchableOpacity onPress={() => navigation.navigate("login")}>
+            <TouchableOpacity>
                 <Text style={styles.btninfo}>Ver Hábitos</Text>
             </TouchableOpacity>
         </View>
@@ -76,8 +76,21 @@ export default function Habitos() {
 
             <Text style={styles.txtTarjeta}>Son aquellos que favorecen la digestión y ayudan a mantener un cuerpo sano</Text>
 
-            <TouchableOpacity onPress={() => navigation.navigate("login")}>
+            <TouchableOpacity >
                 <Text style={styles.btninfo}>Ver Hábitos</Text>
+            </TouchableOpacity>
+        </View>
+        <View style={styles.tarjeta}>
+
+            <View style={styles.headerTarjeta}>
+                <MaterialCommunityIcons name="food" fontSize={10} color={"white"} size={40} style={styles.flecha}/>
+                <Text style={styles.tituloTarjeta}>Recetas</Text>
+            </View>
+
+            <Text style={styles.txtTarjeta}>Deseas mantener una buena alimentación, aquí tienes algunas recetas</Text>
+
+            <TouchableOpacity >
+                <Text style={styles.btninfo}>Ver Recetas</Text>
             </TouchableOpacity>
         </View>
 

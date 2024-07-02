@@ -78,8 +78,13 @@ export default function Agendar() {
   return (
     <View style={styles.container}>
       <View style={styles.nav}>
-        <TouchableOpacity onPress={() => navigation.openDrawer()}>
-          <MaterialCommunityIcons name="menu" color={"white"} size={40} />
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <MaterialCommunityIcons
+            name="arrow-left"
+            fontSize={10}
+            color={"white"}
+            size={40}
+          />
         </TouchableOpacity>
         <Text style={styles.tituloheader}>Salud y Bienestar</Text>
         <TouchableOpacity onPress={() => navigation.navigate("config")}>
@@ -101,15 +106,7 @@ export default function Agendar() {
             marginBottom: 20,
           }}
         >
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <MaterialCommunityIcons
-              name="arrow-left"
-              color={"black"}
-              size={40}
-              style={{ marginTop: 20, top: 20, right: 100 }}
-            />
-          </TouchableOpacity>
-
+          
           <Text style={styles.titulo}>Agendar</Text>
         </View>
 
@@ -213,8 +210,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     textAlign: "center",
-    marginBottom: 10,
-    marginTop: 20,
+    marginBottom: 20,
+    marginTop: 10,
   },
   inputTxt: {
     backgroundColor: "#DBDBDB",
@@ -263,9 +260,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 35,
     textAlign: "center",
-    top: 20,
-    right: 20,
-    // marginLeft: 20,
+    marginTop: 20,
   },
   //
   btninfo: {
@@ -281,10 +276,5 @@ const styles = StyleSheet.create({
     marginRight: "auto",
     marginTop: 20,
     borderRadius: 20,
-  },
-
-  flecha: {
-    marginLeft: 20,
-    top: 40,
   },
 }); //cierre de la hoja de stilos
