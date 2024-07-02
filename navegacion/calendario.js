@@ -1,29 +1,110 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
+  Alert,
   Image,
   Text,
   TouchableOpacity,
   StyleSheet,
   TextInput,
   Button,
+  ActivityIndicator
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from "@react-navigation/native";
 import { ScrollView } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useState } from "react";
 import { Calendar, LocaleConfig } from "react-native-calendars";
 import { Checkbox } from 'react-native-paper';
 import CheckBox from '@react-native-community/checkbox';
+import { useFocusEffect } from '@react-navigation/native';
+import { getFirestore, doc, getDoc, collection, getDocs, deleteDoc } from "firebase/firestore";
+import { getAuth, signOut } from "firebase/auth";
+import { app } from "../AccesoFirebase/accesoFirebase";
+
+const db = getFirestore(app);
+const auth = getAuth(app);
+
 
 
 export default function Calendario() {
   //variable para guardar la navegación
   const navigation = useNavigation();
-  const [selectedValue, setSelectedValue] = useState(0);
-  const [selected, setSelected] = useState(""); //la varible para el calendario
+  const [selected, setSelected] = useState("");
   const [isChecked, setIsChecked] = useState(false)
+  const [checkedEvents, setCheckedEvents] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [events, setEvents] = useState([]);
+
+  const fetchEvents = async () => {
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        const uid = user.uid;
+        const userRef = doc(db, "User", uid);
+        const agendarRef = collection(userRef, "Agendar");
+        const querySnapshot = await getDocs(agendarRef);
+        const eventsList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setEvents(eventsList);
+      } else {
+        console.log("No user is signed in");
+      }
+    } catch (error) {
+      console.error("Error fetching events: ", error);
+    }finally{
+      setIsLoading(false)
+    }
+  };
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchEvents();
+    }, [])
+  );
+
+  const handleAgregar = () => {
+    if (selected) {
+      navigation.navigate("agendar", { selectedDate: selected });
+    } else {
+      alert("Por favor, selecciona una fecha primero.");
+    }
+  };
+
+  const cambioDelCheck = (id) => {
+    setCheckedEvents(prevState => ({
+      ...prevState,
+      [id]: !prevState[id]
+    }));
+  };
+
+
+  const eliminarCita = async (eventId) => {
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        const uid = user.uid;
+        const eventRef = doc(db, "User", uid, "Agendar", eventId);
+        await deleteDoc(eventRef);
+        fetchEvents();
+        Alert.alert("Cita eliminada", "La cita ha sido eliminada correctamente.");
+      }
+    } catch (error) {
+      console.error("Error deleting event: ", error);
+      Alert.alert("Error", "No se pudo eliminar la cita.");
+    }
+  };
+
+  const aviso = (eventId) => {
+    Alert.alert('Eliminar', '¿Quieres eliminar esta cita?', [
+      { text: 'Eliminar', style: 'destructive', onPress: () => eliminarCita(eventId) },
+      { text: 'Cancelar', style: 'cancel', onPress: () => Alert.alert('Cancelado') },
+    ]);
+  };
 
   return (
     <View style={styles.container}>
@@ -48,10 +129,10 @@ export default function Calendario() {
       </View>
 
       <ScrollView>
-          <Text style={styles.titulo}>Calendario</Text>
-          <Text style={styles.txt}>Aquí puedes agendar tus citas y otros</Text>
+        <Text style={styles.titulo}>Calendario</Text>
+        <Text style={styles.txt}>Aquí puedes agendar tus citas y otros</Text>
 
-          {/* para la aparición del calendario */}
+        {/* para la aparición del calendario */}
         <Calendar
           onDayPress={(day) => {
             setSelected(day.dateString);
@@ -67,30 +148,61 @@ export default function Calendario() {
 
         <Text style={styles.label}>Eventos</Text>
 
-        <View style={styles.contEvento}>
-          <View> 
-            <Checkbox sytle={styles.check} status={isChecked ? 'checked' : 'unchecked'} onPress={() => setIsChecked(!isChecked)}/>
-          </View>
-          <View style={styles.evento}>
-            <View style={{display: "flex", flexDirection:"row", justifyContent: "space-evenly", alignItems: "center"}}>
-                <Text style={styles.txtEvento}>Cita médica de laboratorio</Text>
-                
-              <View>
-                  <TouchableOpacity onPress={()=> navigation.navigate("actualizarCita")}>
-                    <MaterialCommunityIcons name={"calendar-edit"} size={30} color={"#fff"}/>
-                  </TouchableOpacity>
-                </View> 
-            </View>
-
-          </View>
-        </View>
-
         
-        <TouchableOpacity onPress={()=>navigation.navigate("agendar")}>
+
+        {isLoading ? (
+        <ActivityIndicator size="large" style={{ marginTop: 20 }} />
+      ) : (
+        events.map((event) => (
+          <View key={event.id} style={styles.contEvento}>
+            <View>
+              <Checkbox
+                style={styles.check}
+                status={checkedEvents[event.id] ? "checked" : "unchecked"}
+                onPress={() => cambioDelCheck(event.id)}
+              />
+            </View>
+            <View style={styles.evento}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={styles.txtEvento}>{event.titulo}</Text>
+                <View style={{ flexDirection: "row" }}>
+                  <MaterialCommunityIcons
+                    onPress={() => aviso(event.id)}
+                    name={"delete"}
+                    size={30}
+                    color={"red"}
+                    style={{ marginRight: 5 }}
+                  />
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate("actualizarCita", { eventId: event.id })
+                    }
+                  >
+                    <MaterialCommunityIcons
+                      name={"calendar-edit"}
+                      size={30}
+                      color={"#fff"}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </View>
+        ))
+      )}
+        
+
+        < TouchableOpacity onPress={handleAgregar}>
           <Text style={styles.btninfo}>+ Agregar</Text>
         </TouchableOpacity>
       </ScrollView>
-    </View>
+    </View >
   );
 }
 
@@ -195,33 +307,35 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     top: 40,
   },
-  evento:{
+  evento: {
     backgroundColor: "#BEEE3B",
     width: "90%",
     borderRadius: 20,
     marginRight: "auto",
     marginLeft: "auto",
-    padding: 5,
+    padding: 7,
+    paddingRight: 16,
   },
   check: {
     color: "#000",
     backgroundColor: "#00C9D2",
     marginLeft: 20,
   },
-  contEvento:{
-    display:"flex", 
-    justifyContent:"center", 
-    alignItems:"center", 
-    flexDirection:"row", 
-    width:"90%",
+  contEvento: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    width: "90%",
+    marginBottom: 15,
     marginRight: "auto",
     marginLeft: "auto",
   },
-  txtEvento:{
+  txtEvento: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: "600",
     marginLeft: 10,
     padding: 2,
-
+    textAlign: 'left',
   },
 }); //cierre de la hoja de stilos

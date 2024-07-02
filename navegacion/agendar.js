@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Image,
@@ -6,34 +6,31 @@ import {
   TouchableOpacity,
   StyleSheet,
   TextInput,
-  Button,
+  ScrollView,
+  Alert,
 } from "react-native";
-import { Picker } from "@react-native-picker/picker";
-import { useNavigation } from "@react-navigation/native";
-import { ScrollView } from "react-native-gesture-handler";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useState } from "react";
-// import DatePicker from "react-native-date-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { Picker } from "@react-native-picker/picker";
+import { auth, app } from "../AccesoFirebase/accesoFirebase"; // Asegúrate de importar db desde tu configuración de Firebase
+import { collection, addDoc, doc,getFirestore } from "firebase/firestore"; // Importa las funciones necesarias desde Firestore
+import { set } from "firebase/database";
+
+const db = getFirestore(app);
 
 export default function Agendar() {
-  //variable para guardar la navegación
   const navigation = useNavigation();
-  const [selectedValue, setSelectedValue] = useState(0);
+  const route = useRoute();
+  const { selectedDate } = route.params;
 
-  //variables para los formatos de las fechas
-  const [openIncio, setOpenInicio] = useState(false);
-  const [openFin, setOpenFin] = useState(false);
+  const [selectedValue, setSelectedValue] = useState(0);
   const [dateInicio, setDateInicio] = useState(new Date());
   const [dateFin, setDateFin] = useState(new Date());
-  // const [fechaFormato, setFechaFormato] = useState("");
-
-  // const formatFecha = (fecha) => {
-  //   const dia = fecha.getDate();
-  //   const mes = fecha.getMonth() + 1; // Los meses comienzan en 0
-  //   const anio = fecha.getFullYear();
-  //   setFechaFormato(`${dia}/${mes}/${anio}`);
-  // };
+  const [openInicio, setOpenInicio] = useState(false);
+  const [openFin, setOpenFin] = useState(false);
+  const [titulo, setTitulo] = useState("");
+  const [descripcion, setDescripcion] = useState("");
 
   const handleDateChangeInicio = (event, selectedDate) => {
     setOpenInicio(false);
@@ -48,7 +45,35 @@ export default function Agendar() {
       setDateFin(selectedDate);
     }
   };
-  //guardar todos los datos de cada uno de los campos
+
+  const handleAgendar = async () => {
+    try {
+      const user = auth.currentUser;
+      if (!user) {
+        alert("Por favor, inicia sesión primero.");
+        return;
+      }
+
+      const userRef = doc(db, "User", user.uid); 
+      const agendarRef = collection(userRef, "Agendar");
+
+      await addDoc(agendarRef, {
+        titulo,
+        dateInicio: `${dateInicio.getHours()}h :${dateInicio.getMinutes()}m`,
+        dateFin: `${dateFin.getHours()}h :${dateFin.getMinutes()}m`,
+        recordatorio: selectedValue,
+        descripcion,
+        selectedDate, 
+      });
+
+      Alert.alert("Cita agendada exitosamente");
+      navigation.goBack();
+    } catch (error) {
+      console.error("Error al agendar la cita: ", error);
+      Alert.alert("Error al agendar la cita, por favor intenta nuevamente.");
+
+    }finally{setTitulo(''), setDateInicio(new Date()),setDateFin(new Date()),setDescripcion('')}
+  };
 
   return (
     <View style={styles.container}>
@@ -62,7 +87,6 @@ export default function Agendar() {
           />
         </TouchableOpacity>
         <Text style={styles.tituloheader}>Salud y Bienestar</Text>
-
         <TouchableOpacity onPress={() => navigation.navigate("config")}>
           <Image
             source={require("../assets/imagenes/perfile.png")}
@@ -86,75 +110,71 @@ export default function Agendar() {
           <Text style={styles.titulo}>Agendar</Text>
         </View>
 
-        <Text style={styles.label}>Titulo</Text>
+        <Text style={styles.label}>Título</Text>
         <TextInput
           keyboardType="ascii-capable"
-          placeholder="Titulo para agendar"
+          placeholder="Título para agendar"
           style={styles.inputTxt}
           underlineColor="transparent"
-        ></TextInput>
+          value={titulo}
+          onChangeText={setTitulo}
+        />
 
+        <Text style={styles.label}>Hora de inicio</Text>
         <TouchableOpacity onPress={() => setOpenInicio(true)}>
-          <Text style={styles.label}>Hora Inicio</Text>
-
-          {openIncio && (
-            <DateTimePicker
-              value={dateInicio}
-              mode="time"
-              display="clock"
-              onChange={handleDateChangeInicio}
-            />
-          )}
-
-          <Text style={styles.inputTxt}>Hora: {dateInicio.getHours()} Minutos: {dateInicio.getMinutes()}</Text>
-
+          <Text style={styles.inputTxt}>
+            {`${dateInicio.getHours()}h :${dateInicio.getMinutes()}m`}
+          </Text>
         </TouchableOpacity>
+        {openInicio && (
+          <DateTimePicker
+            value={dateInicio}
+            mode="time"
+            is24Hour={true}
+            display="default"
+            onChange={handleDateChangeInicio}
+          />
+        )}
 
+        <Text style={styles.label}>Hora de fin</Text>
         <TouchableOpacity onPress={() => setOpenFin(true)}>
-          <Text style={styles.label}>Hora Fin</Text>
-
-          {openFin && (
-            <DateTimePicker
-              value={dateFin}
-              mode="time"
-              display="clock"
-              onChange={handleDateChangeFin}
-            />
-          )}
-
-          <Text style={styles.inputTxt}>Hora: {dateFin.getHours()} Minutos: {dateFin.getMinutes()}</Text>
-
+          <Text style={styles.inputTxt}>
+            {`${dateFin.getHours()}h :${dateFin.getMinutes()}m`}
+          </Text>
         </TouchableOpacity>
+        {openFin && (
+          <DateTimePicker
+            value={dateFin}
+            mode="time"
+            is24Hour={true}
+            display="default"
+            onChange={handleDateChangeFin}
+          />
+        )}
 
-
-
-
-
-        <Text style={styles.label}>Recordar</Text>
-        {/* <TextInput keyboardType="ascii-capable" placeholder="Recordar"  style={styles.inputTxt} underlineColor="transparent"> </TextInput> */}
+        <Text style={styles.label}>Recordatorio</Text>
         <Picker
           selectedValue={selectedValue}
-          onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
           style={styles.inputTxt}
+          onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
         >
-          <Picker.Item label="10 minutos antes" value={0} />
-          <Picker.Item label="1 Día antes" value={1} />
-          <Picker.Item label="2 Dias antes" value={2} />
-          <Picker.Item label="1 Semana antes" value={3} />
-          <Picker.Item label="15 Días antes" value={4} />
+          <Picker.Item label="Ninguno" value={0} />
+          <Picker.Item label="5 minutos antes" value={5} />
+          <Picker.Item label="10 minutos antes" value={10} />
+          <Picker.Item label="15 minutos antes" value={15} />
+          <Picker.Item label="30 minutos antes" value={30} />
         </Picker>
 
         <Text style={styles.label}>Descripción</Text>
         <TextInput
-          keyboardType="ascii-capable"
-          placeholder="Descripción detalla de la tarea a realizar"
-          style={styles.textArea}
+          placeholder="Descripción"
+          style={styles.inputTxt}
           underlineColor="transparent"
-          multiline={true}
-          numberOfLines={5}
-        ></TextInput>
+          value={descripcion}
+          onChangeText={setDescripcion}
+        />
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handleAgendar}>
           <Text style={styles.btninfo}>Agendar</Text>
         </TouchableOpacity>
       </ScrollView>

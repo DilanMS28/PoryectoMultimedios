@@ -45,31 +45,45 @@ export default function Login() {
   //Funcion para recibir los datos en los TextInputs 
   const RegistrarUsuario = async () => {
     if (!validarContraseña()) {
-      Alert.alert('Las contraseñas no coinciden. Por favor intente de nuevo')
+      Alert.alert("Las contraseñas no coinciden. Por favor intente de nuevo");
       return;
     }
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, user.correo, user.contraseña);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        user.correo,
+        user.contraseña
+      );
       const uid = userCredential.user.uid;
 
-      await setDoc(doc(db, 'User', uid), {
+      // Crear documento de usuario en la colección 'User'
+      await setDoc(doc(db, "User", uid), {
         nombre: user.nombre,
         apellidos: user.apellidos,
         correo: user.correo,
         contraseña: user.confContraseña,
-        imagenPerfil: '',
+        imagenPerfil: "",
         datos: {
-          altura: '',
-          peso: '',
-          horaSueño: '',
-          tipoSangre: '',
-        }
+          altura: "",
+          peso: "",
+          horaSueño: "",
+          tipoSangre: "",
+        },
       });
-      Alert.alert('Registrado!', 'Usuario registrado exitosamente!')
-      navigation.navigate('home') //En el futuro me debe llevar a login
 
-    } catch (error) { console.log(error) }
-  }
+      // Crear la subcolección 'Agendar' dentro del documento del usuario
+      await addDoc(collection(db, `User/${uid}/Agendar`), {
+      });
+
+      Alert.alert("Registrado!", "Usuario registrado exitosamente!");
+      navigation.navigate("home");
+
+    } catch (error) {
+      console.error("Error al registrar usuario:", error);
+      Alert.alert("Error al registrar usuario:", error.message);
+    }
+  };
+
 
   return (
     <View style={styles.container}>
