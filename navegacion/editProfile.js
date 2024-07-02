@@ -1,16 +1,22 @@
-import React, {useEffect, useState} from "react";
-import { Image, View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import React, { useState, useEffect } from "react";
+import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, ScrollView, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { auth, app } from "../AccesoFirebase/accesoFirebase";
+import { doc, getFirestore, updateDoc } from "firebase/firestore";
 import * as ImagePicker from 'expo-image-picker';
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-
+const db = getFirestore(app);
 
 export default function EditProfile() {
-
     const navigation = useNavigation();
 
     const [selectedImage, setSelectedImage] = useState(null);
+    const [nombre, setNombre] = useState('');
+    const [apellidos, setApellidos] = useState('');
+    const [correo, setCorreo] = useState('');
+    const [contraseña, setContraseña] = useState('');
+    const [confContraseña, setConfContraseña] = useState('');
 
     useEffect(() => {
         (async () => {
@@ -47,12 +53,42 @@ export default function EditProfile() {
             }
         } catch (error) {
             Alert.alert('Error', 'No se pudo seleccionar la imagen.');
+        }
+    };
 
+    const actualizarPerfil = async () => {
+        try {
+            const user = auth.currentUser;
+            if (user) {
+                const uid = user.uid;
+                const userRef = doc(db, "User", uid);
+
+                // Validación de contraseña y confirmación de contraseña
+                if (contraseña !== confContraseña) {
+                    Alert.alert('Error', 'La contraseña y la confirmación de contraseña no coinciden.');
+                    return;
+                }
+
+                // Actualizar datos en Firestore
+                await updateDoc(userRef, {
+                    nombre,
+                    apellidos,
+                    correo,
+                    contraseña, // Incluimos la contraseña si se desea actualizar
+                });
+
+                Alert.alert('Éxito', 'Perfil actualizado correctamente.');
+                navigation.navigate("config");
+            } else {
+                Alert.alert('Error', 'No se encontró un usuario activo.');
+            }
+        } catch (error) {
+            console.error('Error al actualizar perfil:', error);
+            Alert.alert('Error', 'No se pudo actualizar el perfil.');
         }
     };
 
     return (
-
         <View style={styles.container}>
             <View>
                 <TouchableOpacity onPress={() => navigation.navigate("config")}>
@@ -90,7 +126,9 @@ export default function EditProfile() {
                     placeholder="Tu nombre:"
                     style={styles.inputTxt}
                     underlineColor="transparent"
-                ></TextInput>
+                    value={nombre}
+                    onChangeText={setNombre}
+                />
 
                 <Text style={styles.Tittle}>Apellidos</Text>
                 <TextInput
@@ -98,7 +136,9 @@ export default function EditProfile() {
                     placeholder="Tus apellidos:"
                     style={styles.inputTxt}
                     underlineColor="transparent"
-                ></TextInput>
+                    value={apellidos}
+                    onChangeText={setApellidos}
+                />
 
                 <Text style={styles.Tittle}>Correo</Text>
                 <TextInput
@@ -106,7 +146,9 @@ export default function EditProfile() {
                     placeholder="Correo Electrónico:"
                     style={styles.inputTxt}
                     underlineColor="transparent"
-                ></TextInput>
+                    value={correo}
+                    onChangeText={setCorreo}
+                />
 
                 <Text style={styles.Tittle}>Contraseña</Text>
                 <TextInput
@@ -114,17 +156,27 @@ export default function EditProfile() {
                     placeholder="Contraseña:"
                     style={styles.inputTxt}
                     underlineColor="transparent"
-                ></TextInput>
+                    secureTextEntry={true}
+                    value={contraseña}
+                    onChangeText={setContraseña}
+                />
 
-                <TouchableOpacity onPress={() => navigation.navigate("config")}>
+                <Text style={styles.Tittle}>Confirmar Contraseña</Text>
+                <TextInput
+                    keyboardType="ascii-capable"
+                    placeholder="Confirmar Contraseña:"
+                    style={styles.inputTxt}
+                    underlineColor="transparent"
+                    secureTextEntry={true}
+                    value={confContraseña}
+                    onChangeText={setConfContraseña}
+                />
+
+                <TouchableOpacity onPress={actualizarPerfil}>
                     <Text style={styles.btn}>Guardar</Text>
                 </TouchableOpacity>
-
-
             </ScrollView>
-
         </View>
-
     );
 }
 
@@ -136,7 +188,6 @@ const styles = StyleSheet.create({
     editPerfil: {
         display: 'inline',
         alignItems: 'flex-end'
-
     },
 
     Icon: {

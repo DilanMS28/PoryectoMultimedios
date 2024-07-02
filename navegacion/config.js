@@ -1,46 +1,80 @@
 import React, { useState, useEffect } from 'react';
 import { View, Image, TouchableOpacity, StyleSheet, Alert, Text, ScrollView } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation,useFocusEffect  } from '@react-navigation/native';
 import Collapsible from 'react-native-collapsible';
 import * as ImagePicker from 'expo-image-picker';
 
-const dataP = [
-  { nombre: 'Nombre: Juanito' },
-  { apellido: 'Apellidos: Perez Perez' },
-  { correo: 'Correo: correo@correo.com' },
-  { contrasenna: 'Contraseña: **********' },
-];
 
-const dataM = [
-  { Altura: 'Altura: 160 cm' },
-  { Peso: 'Peso: 68 Kg' },
-  { Suenno: 'Hora de sueño: 6 h' },
-  { Sangre: 'Tipo sangre: -O' },
-];
+import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { getAuth,signOut  } from "firebase/auth";
+import { app } from "../AccesoFirebase/accesoFirebase";
+
+const db = getFirestore(app);
+const auth = getAuth(app);
+
 
 const dataDP = [
   { Dispositivo: 'Xiaomi Poco X5 PRO' },
   { DP: 'Lenovo Yoga L3' }
 ];
 
-const NS = [
-  { Complicado: 'No sé como qué poner aquí' }
+const Seguridad = [
+  { Seguridad: 'Datos de seguridad' }
+];
+const Accesibilidad = [
+  { Accesibilidad: 'Datos de Accesibilidad' }
 ];
 
 export default function Config() {
   const navigation = useNavigation();
   const [collapsed, setCollapsed] = useState(true);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [userData, setUserData] = useState(null);
+
+  const getUpdatedUserData = async () => {
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        const uid = user.uid;
+        const docRef = doc(db, 'User', uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          setUserData(docSnap.data());
+        } else {
+          console.log("No such document!");
+        }
+      }
+    } catch (error) {
+      console.error('Error al obtener datos de usuario:', error);
+    }
+  };
+
 
   useEffect(() => {
-    (async () => {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert('Permiso denegado', 'Se necesita permiso para acceder a la galería.');
+    const fetchUserData = async () => {
+      try {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+          Alert.alert('Permiso denegado', 'Se necesita permiso para acceder a la galería.');
+        }
+        
+        await getUpdatedUserData();
+      } catch (error) {
+        console.error('Error al cargar datos de usuario:', error);
       }
-    })();
+    };
+
+    fetchUserData();
   }, []);
+
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getUpdatedUserData();
+    }, [])
+  );
 
   const handlePickImage = async () => {
     try {
@@ -62,13 +96,11 @@ export default function Config() {
       } else if (result.assets && result.assets.length > 0) {
         const uri = result.assets[0].uri;
         setSelectedImage(uri);
-
       } else {
         Alert.alert('Error', 'No se recibió la URI de la imagen seleccionada.');
       }
     } catch (error) {
       Alert.alert('Error', 'No se pudo seleccionar la imagen.');
-
     }
   };
 
@@ -76,6 +108,15 @@ export default function Config() {
     setCollapsed(!collapsed);
   };
 
+  const cerrarSesion = async () => {
+    try {
+      await signOut(auth);
+      navigation.navigate('login'); 
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+      Alert.alert('Error', 'No se pudo cerrar sesión.');
+    }
+  };
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => navigation.navigate("inicio")}>
@@ -123,9 +164,16 @@ export default function Config() {
             </TouchableOpacity>
             <Collapsible collapsed={collapsed} align="center">
               <View>
-                {dataP.map((item, index) => (
-                  <Text key={index} style={styles.dataStyle}>{Object.values(item)[0]}</Text>
-                ))}
+                {userData ? (
+                  <>
+                    <Text style={styles.dataStyle}>Nombre: {userData.nombre}</Text>
+                    <Text style={styles.dataStyle}>Apellidos: {userData.apellidos}</Text>
+                    <Text style={styles.dataStyle}>Correo: {userData.correo}</Text>
+                    <Text style={styles.dataStyle}>Contraseña: **********</Text>
+                  </>
+                ) : (
+                  <Text style={styles.dataStyle}>No se han insertado datos aún.</Text>
+                )}
               </View>
             </Collapsible>
           </View>
@@ -145,9 +193,16 @@ export default function Config() {
             </TouchableOpacity>
             <Collapsible collapsed={collapsed} align="center">
               <View>
-                {dataM.map((item, index) => (
-                  <Text key={index} style={styles.dataStyle}>{Object.values(item)[0]}</Text>
-                ))}
+                {userData && userData.datos ? (
+                  <>
+                    <Text style={styles.dataStyle}>Altura: {userData.datos.altura}</Text>
+                    <Text style={styles.dataStyle}>Peso: {userData.datos.peso}</Text>
+                    <Text style={styles.dataStyle}>Hora de sueño: {userData.datos.horaSueño}</Text>
+                    <Text style={styles.dataStyle}>Tipo sangre: {userData.datos.tipoSangre}</Text>
+                  </>
+                ) : (
+                  <Text style={styles.dataStyle}>No se han insertado datos aún.</Text>
+                )}
               </View>
             </Collapsible>
           </View>
@@ -189,7 +244,7 @@ export default function Config() {
             </TouchableOpacity>
             <Collapsible collapsed={collapsed} align="center">
               <View>
-                {NS.map((item, index) => (
+                {Seguridad.map((item, index) => (
                   <Text key={index} style={styles.dataStyle}>{Object.values(item)[0]}</Text>
                 ))}
               </View>
@@ -211,20 +266,21 @@ export default function Config() {
             </TouchableOpacity>
             <Collapsible collapsed={collapsed} align="center">
               <View>
-                {NS.map((item, index) => (
+                {Accesibilidad.map((item, index) => (
                   <Text key={index} style={styles.dataStyle}>{Object.values(item)[0]}</Text>
                 ))}
               </View>
             </Collapsible>
           </View>
         </View>
-        <TouchableOpacity onPress={() => navigation.navigate("login")}>
+        <TouchableOpacity onPress={cerrarSesion}>
           <Text style={styles.btn}>Cerrar Sesión</Text>
         </TouchableOpacity>
       </ScrollView>
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -303,3 +359,4 @@ const styles = StyleSheet.create({
   },
 
 });
+

@@ -1,15 +1,38 @@
-import React from "react";
-import { View, Image, Text, TouchableOpacity, StyleSheet } from "react-native";
+import React,{useState} from "react";
+import { View, Image, Text, TouchableOpacity, StyleSheet, Alert} from "react-native";
 import { TextInput } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
+import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+
+//Importacion de lo necesario para autenticar el usuario en firebase
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../AccesoFirebase/accesoFirebase";
+
 
 export default function Login() {
   //variable para guardar la navegación
   const navigation = useNavigation()
+  
+  
+  //Contantes para validar al usuario 
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const cambioTexto = async (event) => {
+    event.preventDefault();
+    try {
+      await signInWithEmailAndPassword(auth, email, password)
+      navigation.navigate('home')
+    } catch (error) { console.log('Error al iniciar sesión',error) 
+      Alert.alert('Correo o contraseña incorrecto. Por favor intente de nuevo.')
+    }
+  }
+
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={()=>navigation.navigate("crearcuenta")}>
+      <TouchableOpacity onPress={() => navigation.navigate("crearcuenta")}>
         <Text style={styles.txtRegistrarse}>Registrarme</Text>
       </TouchableOpacity>
 
@@ -20,15 +43,18 @@ export default function Login() {
         />
       </View>
 
-        <Text style={styles.titulo}>Iniciar Sesión</Text>
-        <View style={styles.division}/>
+      <Text style={styles.titulo}>Iniciar Sesión</Text>
+      <View style={styles.division} />
 
-      <Text style={styles.label}>Usuario</Text>
+      <Text style={styles.label}>Coreo Electrónico</Text>
       <TextInput
         keyboardType="ascii-capable"
-        placeholder="Nombre Usuario" 
+        placeholder="Coreo electrónico"
         style={styles.inputTxt}
         underlineColor="transparent"
+        value={email}
+        onChangeText={(e)=>setEmail(e)}
+
       ></TextInput>
 
       <Text style={styles.label}>Contraseña</Text>
@@ -37,13 +63,15 @@ export default function Login() {
         placeholder="Contraseña"
         style={styles.inputTxt}
         underlineColor="transparent"
+        value={password}
+        onChangeText={(e)=>setPassword(e)}
       ></TextInput>
 
-      <TouchableOpacity onPress={()=>navigation.navigate("home")}>
+      <TouchableOpacity onPress={cambioTexto}>
         <Text style={styles.btnIniciarSesion}>Iniciar Sesión</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={()=>navigation.navigate("recuperarcontraseña")}>
+      <TouchableOpacity onPress={() => navigation.navigate("recuperarcontraseña")}>
         <Text style={styles.txtOlvidar}>Olvidaste tu contraseña?</Text>
       </TouchableOpacity>
     </View>
@@ -75,7 +103,7 @@ const styles = StyleSheet.create({
     marginRight: "auto",
     marginLeft: "auto",
   },
-  division:{
+  division: {
     height: 4,
     width: "100%",
     backgroundColor: "#BEEE3B",
@@ -97,9 +125,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginTop: 20,
   },
-  inputTxt:{
-    backgroundColor:"#DBDBDB",
-    borderBottomWidth:0,
+  inputTxt: {
+    backgroundColor: "#DBDBDB",
+    borderBottomWidth: 0,
     borderTopStartRadius: 20,
     borderTopEndRadius: 20,
     borderBottomStartRadius: 20,
@@ -107,8 +135,8 @@ const styles = StyleSheet.create({
     width: 100,
     width: "100%",
   },
-  inpBorder:{
-    borderWidth:2,
+  inpBorder: {
+    borderWidth: 2,
   },
   btnIniciarSesion: {
     backgroundColor: "#BEEE3B",
@@ -125,12 +153,12 @@ const styles = StyleSheet.create({
     marginBottom: 40,
     borderRadius: 20,
   },
-  txtOlvidar:{
+  txtOlvidar: {
     color: "#484848",
     opacity: 0.5,
     fontWeight: "bold",
     fontSize: 20,
     textAlign: "center",
   }
-  
+
 }); //cierre de la hoja de stilos
