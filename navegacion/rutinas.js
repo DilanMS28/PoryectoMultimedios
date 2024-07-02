@@ -39,7 +39,7 @@ export default function Rutinas() {
         <View style={styles.tarjeta}>
             
             <View style={styles.headerTarjeta}>
-                <MaterialCommunityIcons name="chat-question" fontSize={10} color={"white"} size={40} style={styles.flecha}/>
+                <MaterialCommunityIcons name="weight-kilogram" fontSize={10} color={"white"} size={40} style={styles.flecha}/>
                 <Text style={styles.tituloTarjeta}>Ejercicios</Text>
             </View>
 
