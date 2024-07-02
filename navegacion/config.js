@@ -58,7 +58,7 @@ export default function Config() {
       });
 
       if (result.canceled) {
-        console.log('Selección de imagen cancelada');
+        alert("Imagen no seleccionada")
       } else if (result.assets && result.assets.length > 0) {
         const uri = result.assets[0].uri;
         setSelectedImage(uri);

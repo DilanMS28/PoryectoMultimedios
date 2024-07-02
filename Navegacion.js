@@ -21,6 +21,8 @@ import EditProfile from "./navegacion/editProfile";
 import MyData from "./navegacion/myData";
 import ActualizarCita from "./navegacion/actualizarCita";
 import Calendario from "./navegacion/calendario";
+import Chat from "./navegacion/chat";
+import Ejercicio from "./navegacion/ejercicio";
 
 
 
@@ -49,6 +51,8 @@ function Stacks() {
       <StackNav.Screen name="home" component={Drawers} />
       <StackNav.Screen name="agendar" component={Agendar} />
       <StackNav.Screen name="actualizarCita" component={ActualizarCita} />
+      <StackNav.Screen name="chat" component={Chat} />
+      <StackNav.Screen name="ejercicio" component={Ejercicio} />
     </StackNav.Navigator>
   );
 }
@@ -68,7 +72,6 @@ function Drawers() {
       <DrawerNav.Screen name="rutinas" component={Rutinas} options={{drawerLabel:"Rutina de Ejercicios"}}/>
       <DrawerNav.Screen name="calendario" component={Calendario} options={{drawerLabel:"Calendario"}} />
       <DrawerNav.Screen name="config" component={Config}  options={{drawerLabel:"Configuraciones"}}/>
-      
     </DrawerNav.Navigator>
   );
 }

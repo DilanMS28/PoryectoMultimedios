@@ -1,17 +1,17 @@
 import React from "react";
 import { View, Image, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, DrawerActions } from "@react-navigation/native";
 import { ScrollView } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-export default function Habitos() {
+export default function Rutinas() {
   //variable para guardar la navegación
   const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
       <View style={styles.nav}>
-        <TouchableOpacity onPress={() => navigation.openDrawer()}>
+        <TouchableOpacity onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
           <MaterialCommunityIcons
             name="menu"
             fontSize={10}
@@ -39,14 +39,29 @@ export default function Habitos() {
         <View style={styles.tarjeta}>
             
             <View style={styles.headerTarjeta}>
+                <MaterialCommunityIcons name="chat-question" fontSize={10} color={"white"} size={40} style={styles.flecha}/>
+                <Text style={styles.tituloTarjeta}>Ejercicios</Text>
+            </View>
+
+            <Text style={styles.txtTarjeta}>Te gustaría conocer acerca de los mejores ejercicios para tu salud</Text>
+
+            <TouchableOpacity onPress={() => navigation.navigate("chat")}>
+                <Text style={styles.btninfo}>Ejercicios</Text>
+            </TouchableOpacity>
+
+        </View>
+
+        <View style={styles.tarjeta}>
+            
+            <View style={styles.headerTarjeta}>
                 <MaterialCommunityIcons name="dumbbell" fontSize={10} color={"white"} size={40} style={styles.flecha}/>
                 <Text style={styles.tituloTarjeta}>Quemar Grasa</Text>
             </View>
 
             <Text style={styles.txtTarjeta}>Son aquellos que nos ayudan a mantenernos con energía durante el día</Text>
 
-            <TouchableOpacity onPress={() => navigation.navigate("login")}>
-                <Text style={styles.btninfo}>Ver Hábitos</Text>
+            <TouchableOpacity>
+                <Text style={styles.btninfo}>Rutina</Text>
             </TouchableOpacity>
 
         </View>
@@ -61,8 +76,8 @@ export default function Habitos() {
 
             <Text style={styles.txtTarjeta}>Son aquellos que nos ayudan a conciliar mejor el sueño y favorece la recuperación y el descanso</Text>
 
-            <TouchableOpacity onPress={() => navigation.navigate("login")}>
-                <Text style={styles.btninfo}>Ver Hábitos</Text>
+            <TouchableOpacity>
+                <Text style={styles.btninfo}>Rutina</Text>
             </TouchableOpacity>
         </View>
 
@@ -76,8 +91,8 @@ export default function Habitos() {
 
             <Text style={styles.txtTarjeta}>Son aquellos que favorecen la digestión y ayudan a mantener un cuerpo sano</Text>
 
-            <TouchableOpacity onPress={() => navigation.navigate("login")}>
-                <Text style={styles.btninfo}>Ver Hábitos</Text>
+            <TouchableOpacity>
+                <Text style={styles.btninfo}>Rutina</Text>
             </TouchableOpacity>
         </View>
 

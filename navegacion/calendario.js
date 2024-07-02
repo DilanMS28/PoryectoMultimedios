@@ -72,7 +72,16 @@ export default function Calendario() {
             <Checkbox sytle={styles.check} status={isChecked ? 'checked' : 'unchecked'} onPress={() => setIsChecked(!isChecked)}/>
           </View>
           <View style={styles.evento}>
-            <Text style={styles.txtEvento}>Cita médica de laboratorio</Text>
+            <View style={{display: "flex", flexDirection:"row", justifyContent: "space-evenly", alignItems: "center"}}>
+                <Text style={styles.txtEvento}>Cita médica de laboratorio</Text>
+                
+              <View>
+                  <TouchableOpacity onPress={()=> navigation.navigate("actualizarCita")}>
+                    <MaterialCommunityIcons name={"calendar-edit"} size={30} color={"#fff"}/>
+                  </TouchableOpacity>
+                </View> 
+            </View>
+
           </View>
         </View>
 
@@ -192,7 +201,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginRight: "auto",
     marginLeft: "auto",
-    padding: 5
+    padding: 5,
   },
   check: {
     color: "#000",
