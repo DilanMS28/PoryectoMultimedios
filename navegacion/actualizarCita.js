@@ -6,15 +6,14 @@ import {
   TextInput,
   Alert,
   StyleSheet,
-  Image
+  Image,
+  ScrollView
 } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { Picker } from "@react-native-picker/picker";
-import { ScrollView } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
-
-import { getFirestore, doc, getDoc, updateDoc,Timestamp  } from "firebase/firestore";
+import { getFirestore, doc, getDoc, updateDoc,Timestamp } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { app } from "../AccesoFirebase/accesoFirebase";
 
@@ -26,14 +25,16 @@ export default function ActualizarCita() {
   const route = useRoute();
   const { eventId } = route.params;
 
+  // Estados para manejar los datos de la cita
   const [selectedValue, setSelectedValue] = useState(0);
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
   const [dateInicio, setDateInicio] = useState(new Date());
   const [dateFin, setDateFin] = useState(new Date());
   const [openInicio, setOpenInicio] = useState(false);
   const [openFin, setOpenFin] = useState(false);
+  const [description, setDescription] = useState("");
 
+  // Función para obtener los datos de la cita a actualizar
   useEffect(() => {
     const fetchEventData = async () => {
       try {
@@ -46,8 +47,17 @@ export default function ActualizarCita() {
             const eventData = eventDoc.data();
             setTitle(eventData.titulo || "");
             setDescription(eventData.descripcion || "");
-            setDateInicio(new Date(eventData.dateInicio.seconds * 1000));
-            setDateFin(new Date(eventData.dateFin.seconds * 1000));
+  
+            // Verificar y establecer la fecha de inicio si existe y es válida
+            if (eventData.dateInicio && eventData.dateInicio instanceof Timestamp) {
+              setDateInicio(eventData.dateInicio.toDate());
+            }
+  
+            // Verificar y establecer la fecha de fin si existe y es válida
+            if (eventData.dateFin && eventData.dateFin instanceof Timestamp) {
+              setDateFin(eventData.dateFin.toDate());
+            }
+  
             setSelectedValue(eventData.recordatorio || 0);
           } else {
             console.log("No existe ese documento!");
@@ -57,10 +67,11 @@ export default function ActualizarCita() {
         console.error("Error fetching event data: ", error);
       }
     };
-
+  
     fetchEventData();
   }, [eventId]);
 
+  // Función para manejar el cambio de fecha de inicio
   const handleDateChangeInicio = (event, selectedDate) => {
     setOpenInicio(false);
     if (selectedDate) {
@@ -68,6 +79,7 @@ export default function ActualizarCita() {
     }
   };
 
+  // Función para manejar el cambio de fecha de fin
   const handleDateChangeFin = (event, selectedDate) => {
     setOpenFin(false);
     if (selectedDate) {
@@ -75,30 +87,42 @@ export default function ActualizarCita() {
     }
   };
 
-  const handleUpdate = async () => {
+  // Función para formatear la hora
+  const formatTime = (date) => {
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+  };
+
+  // Función para actualizar la cita en Firestore
+  const handleActualizarCita = async () => {
     try {
       const user = auth.currentUser;
-      if (user) {
-        const uid = user.uid;
-        const eventRef = doc(db, "User", uid, "Agendar", eventId);
-        await updateDoc(eventRef, {
-          titulo: title,
-          descripcion: description,
-          dateInicio: Timestamp.fromDate(dateInicio),
-          dateFin: Timestamp.fromDate(dateFin),
-          recordatorio: selectedValue,
-        });
-        Alert.alert(
-          "Cita actualizada",
-          "La cita ha sido actualizada correctamente."
-        );
-        navigation.goBack();
+      if (!user) {
+        alert("Por favor, inicia sesión primero.");
+        return;
       }
+  
+      const userRef = doc(db, "User", user.uid); 
+      const eventRef = doc(userRef, "Agendar", eventId);
+  
+      await updateDoc(eventRef, {
+        titulo: title,
+        // Convertimos las fechas a objetos Timestamp para Firestore
+        dateInicio: Timestamp.fromDate(dateInicio),
+        dateFin: Timestamp.fromDate(dateFin),
+        recordatorio: selectedValue,
+        descripcion: description,
+      });
+  
+      Alert.alert("Cita actualizada exitosamente");
+      navigation.goBack();
     } catch (error) {
-      console.error("Error updating event: ", error);
-      Alert.alert("Error", "No se pudo actualizar la cita.");
+      console.error("Error al actualizar la cita: ", error);
+      Alert.alert("Error al actualizar la cita, por favor intenta nuevamente.");
     }
   };
+
 
   return (
     <View style={styles.container}>
@@ -122,84 +146,75 @@ export default function ActualizarCita() {
       </View>
 
       <ScrollView>
-        <View
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "row",
-            marginBottom: 20,
-          }}
-        >
-          <Text style={styles.titulo}>Editar</Text>
+        <View style={{ display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "row", marginBottom: 20 }}>
+          <Text style={styles.titulo}>Actualizar Cita</Text>
         </View>
 
         <Text style={styles.label}>Título</Text>
         <TextInput
-          value={title}
-          onChangeText={setTitle}
+          keyboardType="ascii-capable"
           placeholder="Título para agendar"
           style={styles.inputTxt}
-          underlineColorAndroid="transparent"
+          underlineColor="transparent"
+          value={title}
+          onChangeText={setTitle}
         />
 
+        <Text style={styles.label}>Hora de inicio</Text>
         <TouchableOpacity onPress={() => setOpenInicio(true)}>
-          <Text style={styles.label}>Hora Inicio</Text>
           <Text style={styles.inputTxt}>
-            {`${dateInicio.getHours()}h :${dateInicio.getMinutes()}m`}
+            {formatTime(dateInicio)}
           </Text>
-          {openInicio && (
-            <DateTimePicker
-              value={dateInicio}
-              mode="time"
-              is24Hour={true}
-              display="default"
-              onChange={handleDateChangeInicio}
-            />
-          )}
         </TouchableOpacity>
+        {openInicio && (
+          <DateTimePicker
+            value={dateInicio}
+            mode="time"
+            is24Hour={true}
+            display="default"
+            onChange={handleDateChangeInicio}
+          />
+        )}
 
+        <Text style={styles.label}>Hora de fin</Text>
         <TouchableOpacity onPress={() => setOpenFin(true)}>
-          <Text style={styles.label}>Hora Fin</Text>
           <Text style={styles.inputTxt}>
-            {`${dateFin.getHours()}h :${dateFin.getMinutes()}m`}
+            {formatTime(dateFin)}
           </Text>
-          {openFin && (
-            <DateTimePicker
-              value={dateFin}
-              mode="time"
-              is24Hour={true}
-              display="default"
-              onChange={handleDateChangeFin}
-            />
-          )}
         </TouchableOpacity>
+        {openFin && (
+          <DateTimePicker
+            value={dateFin}
+            mode="time"
+            is24Hour={true}
+            display="default"
+            onChange={handleDateChangeFin}
+          />
+        )}
 
         <Text style={styles.label}>Recordatorio</Text>
         <Picker
           selectedValue={selectedValue}
-          onValueChange={(itemValue) => setSelectedValue(itemValue)}
           style={styles.inputTxt}
+          onValueChange={(itemValue) => setSelectedValue(itemValue)}
         >
-          <Picker.Item label="10 minutos antes" value={0} />
-          <Picker.Item label="1 Día antes" value={1} />
-          <Picker.Item label="2 Días antes" value={2} />
-          <Picker.Item label="1 Semana antes" value={3} />
-          <Picker.Item label="15 Días antes" value={4} />
+          <Picker.Item label="Ninguno" value={0} />
+          <Picker.Item label="5 minutos antes" value={5} />
+          <Picker.Item label="10 minutos antes" value={10} />
+          <Picker.Item label="15 minutos antes" value={15} />
+          <Picker.Item label="30 minutos antes" value={30} />
         </Picker>
 
         <Text style={styles.label}>Descripción</Text>
         <TextInput
+          placeholder="Descripción"
+          style={styles.inputTxt}
+          underlineColor="transparent"
           value={description}
           onChangeText={setDescription}
-          placeholder="Descripción detallada de la tarea a realizar"
-          style={[styles.inputTxt, styles.textArea]}
-          underlineColorAndroid="transparent"
-          multiline={true}
-          numberOfLines={5}
         />
 
-        <TouchableOpacity onPress={handleUpdate}>
+        <TouchableOpacity onPress={handleActualizarCita}>
           <Text style={styles.btninfo}>Actualizar</Text>
         </TouchableOpacity>
       </ScrollView>

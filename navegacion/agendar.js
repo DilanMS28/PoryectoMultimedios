@@ -1,29 +1,31 @@
 import React, { useState } from "react";
 import {
   View,
-  Image,
   Text,
   TouchableOpacity,
-  StyleSheet,
   TextInput,
-  ScrollView,
   Alert,
+  StyleSheet,
+  Image,
+  ScrollView
 } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
+import { Picker } from "@react-native-picker/picker";
+import { useRoute } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Picker } from "@react-native-picker/picker";
-import { auth, app } from "../AccesoFirebase/accesoFirebase"; // Asegúrate de importar db desde tu configuración de Firebase
-import { collection, addDoc, doc,getFirestore } from "firebase/firestore"; // Importa las funciones necesarias desde Firestore
-import { set } from "firebase/database";
+import { getFirestore, doc, collection, addDoc, Timestamp } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { app } from "../AccesoFirebase/accesoFirebase";
 
 const db = getFirestore(app);
+const auth = getAuth(app);
 
 export default function Agendar() {
   const navigation = useNavigation();
-  const route = useRoute();
-  const { selectedDate } = route.params;
+  const route=useRoute();
 
+  const {selectedDate} = route.params
   const [selectedValue, setSelectedValue] = useState(0);
   const [dateInicio, setDateInicio] = useState(new Date());
   const [dateFin, setDateFin] = useState(new Date());
@@ -53,26 +55,30 @@ export default function Agendar() {
         alert("Por favor, inicia sesión primero.");
         return;
       }
-
+  
       const userRef = doc(db, "User", user.uid); 
       const agendarRef = collection(userRef, "Agendar");
-
+  
       await addDoc(agendarRef, {
         titulo,
-        dateInicio: `${dateInicio.getHours()}h :${dateInicio.getMinutes()}m`,
-        dateFin: `${dateFin.getHours()}h :${dateFin.getMinutes()}m`,
+        dateInicio: Timestamp.fromDate(dateInicio),
+        dateFin: Timestamp.fromDate(dateFin),
         recordatorio: selectedValue,
         descripcion,
-        selectedDate, 
+        selectedDate,
       });
-
+  
       Alert.alert("Cita agendada exitosamente");
       navigation.goBack();
     } catch (error) {
       console.error("Error al agendar la cita: ", error);
       Alert.alert("Error al agendar la cita, por favor intenta nuevamente.");
-
-    }finally{setTitulo(''), setDateInicio(new Date()),setDateFin(new Date()),setDescripcion('')}
+    } finally {
+      setTitulo('');
+      setDateInicio(new Date());
+      setDateFin(new Date());
+      setDescripcion('');
+    }
   };
 
   return (
@@ -97,16 +103,7 @@ export default function Agendar() {
       </View>
 
       <ScrollView>
-        <View
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "row",
-            marginBottom: 20,
-          }}
-        >
-          
+        <View style={{ display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "row", marginBottom: 20 }}>
           <Text style={styles.titulo}>Agendar</Text>
         </View>
 
@@ -188,17 +185,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   nav: {
-    display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    width: "100%",
     backgroundColor: "#00C9D2",
     height: 100,
     paddingTop: 40,
     paddingBottom: 10,
-    paddingRight: 10,
-    paddingLeft: 10,
+    paddingHorizontal: 10,
   },
   tituloheader: {
     fontSize: 20,
@@ -210,7 +204,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     textAlign: "center",
-    marginBottom: 20,
+    marginBottom: 10,
     marginTop: 10,
   },
   inputTxt: {
@@ -224,37 +218,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   textArea: {
-    backgroundColor: "#DBDBDB",
-    borderRadius: 10,
-    padding: 10,
-    paddingLeft: 20,
-    width: "90%",
-    marginRight: "auto",
-    marginLeft: "auto",
-    fontSize: 18,
     height: 100,
     textAlignVertical: "top",
   },
-  txtTarjeta: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "normal",
-    textAlign: "justify",
-    lineHeight: 20,
-    padding: 5,
-    marginBottom: 10,
-  },
-  txt: {
-    color: "#484848",
-    fontWeight: "400",
-    fontSize: 18,
-    textAlign: "center",
-    marginBottom: 30,
-    marginRight: 20,
-    marginLeft: 20,
-    lineHeight: 25,
-  },
-
   titulo: {
     color: "#000",
     fontWeight: "bold",
@@ -262,7 +228,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 20,
   },
-  //
   btninfo: {
     backgroundColor: "#BEEE3B",
     color: "#fff",
@@ -272,9 +237,8 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     width: 180,
     height: 50,
-    marginLeft: "auto",
-    marginRight: "auto",
+    alignSelf: "center",
     marginTop: 20,
     borderRadius: 20,
   },
-}); //cierre de la hoja de stilos
+});
