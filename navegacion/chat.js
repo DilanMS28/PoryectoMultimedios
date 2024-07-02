@@ -17,13 +17,6 @@ export default function Chat(props) {
     const [dificultad, setDificultad] = useState("")
 
 
-    const TipoDificultad = ()=>{
-      if(data.difficulty == "beginner"){
-      }
-    }
-
-
-
     const url = 'https://api.api-ninjas.com/v1/exercises';
     const options = {
       method: 'GET',
@@ -44,6 +37,17 @@ export default function Chat(props) {
         setIsLoading(false);
       }
     };
+
+    const TipoDificultad = (difficulty)=>{
+        switch(difficulty){
+          case "beginner":
+            return "#009900";
+          case "intermediate":
+            return "#ffff00";
+          case "hard":
+            return "red"
+        }
+    }
   
     useEffect(() => {
       Recetario();
@@ -90,7 +94,7 @@ export default function Chat(props) {
               keyExtractor={({ id }) => id}
               renderItem={({ item }) => (
                 <View style={styles.tarjeta}>
-                  <Text style={styles.response}> <Text style={styles.span}>Dificultad:</Text> {item.difficulty}</Text>
+                  <Text style={[styles.response, {color: TipoDificultad(item.difficulty)} ]}> <Text style={styles.span}>Dificultad:</Text> {item.difficulty}</Text>
                   <Text style={styles.response}> <Text style={styles.span}>Nombre:</Text> {item.name}</Text>
                   <Text style={styles.response}> <Text style={styles.span}>Tipo:</Text> {item.type}</Text>
                   <Text style={styles.response}> <Text style={styles.span}>Músculo:</Text> {item.muscle}</Text>
@@ -223,8 +227,8 @@ const styles = StyleSheet.create({
     lineHeight: 25,
   },
   response:{
-    fontWeight: "normal",
-    fontSize: 16,
+    fontWeight: "600",
+    fontSize: 18,
     color: "#454546"
   },
 }); //cierre de la hoja de stilos

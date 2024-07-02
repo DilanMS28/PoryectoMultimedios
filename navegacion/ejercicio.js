@@ -11,16 +11,21 @@ export default function Ejercicio(props) {
 
   const navigation = useNavigation();
 
-    // const OPENAI_API_KEY = require("")
     const [isLoading, setIsLoading] = useState(true);
     // const [ejercicio, setEjercicio] = useState([])
 
     const {ejercicioId} = props.route.params;
 
-    // useEffect( ()=>{
-    //     setEjercicio(props.route.params.ejercicioId)
-    // })
-
+    const TipoDificultad = (difficulty)=>{
+        switch(difficulty){
+          case "beginner":
+            return "#009900";
+          case "intermediate":
+            return "#ffff00";
+          case "hard":
+            return "red"
+        }
+    }
 
   return (
     <View style={styles.container}>
@@ -53,7 +58,7 @@ export default function Ejercicio(props) {
         <View style={styles.tarjeta}>
             <Text style={styles.ejTitulo}>{ejercicioId.name}</Text>
             <View style={{display:"flex", flexDirection: "row", justifyContent: "space-evenly"}}>
-                <Text style={styles.txt}> <Text style={styles.label}>Dificultad: </Text>{ejercicioId.difficulty}</Text>
+                <Text style={[styles.txt, {color: TipoDificultad(ejercicioId.difficulty)}]}> <Text style={styles.label}>Dificultad: </Text>{ejercicioId.difficulty}</Text>
                 <Text style={styles.txt}> <Text style={styles.label}>Musculo: </Text>{ejercicioId.muscle}</Text>
 
             </View>
@@ -139,8 +144,8 @@ const styles = StyleSheet.create({
 
   txt: {
     color: "#484848",
-    fontWeight: "400",
-    fontSize: 16,
+    fontWeight: "600",
+    fontSize: 18,
     textAlign: "center",
     marginBottom: 30,
     marginRight: 20,
