@@ -21,9 +21,17 @@ import CheckBox from '@react-native-community/checkbox';
 export default function Calendario() {
   //variable para guardar la navegación
   const navigation = useNavigation();
-  const [selectedValue, setSelectedValue] = useState(0);
   const [selected, setSelected] = useState(""); //la varible para el calendario
   const [isChecked, setIsChecked] = useState(false)
+
+  const handleAgregar = () => {
+    if (selected) {
+      navigation.navigate("agendar", { selectedDate: selected });
+    } else {
+      alert("Por favor, selecciona una fecha primero.");
+    }
+  };
+
 
   return (
     <View style={styles.container}>
@@ -77,7 +85,7 @@ export default function Calendario() {
         </View>
 
         
-        <TouchableOpacity onPress={()=>navigation.navigate("agendar")}>
+        <TouchableOpacity onPress={handleAgregar}>
           <Text style={styles.btninfo}>+ Agregar</Text>
         </TouchableOpacity>
       </ScrollView>
