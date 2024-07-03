@@ -211,7 +211,6 @@ export default function Config() {
             <TouchableOpacity onPress={toggleExpanded} style={{ top: 30 }}>
               <View style={styles.toggleContain}>
                 <MaterialCommunityIcons
-                  onPress={() => navigation.navigate('editarPorfile')}
                   name="square-edit-outline"
                   color="white"
                   size={40}
@@ -233,7 +232,6 @@ export default function Config() {
             <TouchableOpacity onPress={toggleExpanded} style={{ top: 30 }}>
               <View style={styles.toggleContain}>
                 <MaterialCommunityIcons
-                  onPress={() => navigation.navigate('editarPorfile')}
                   name="square-edit-outline"
                   color="white"
                   size={40}
@@ -255,7 +253,6 @@ export default function Config() {
             <TouchableOpacity onPress={toggleExpanded} style={{ top: 30 }}>
               <View style={styles.toggleContain}>
                 <MaterialCommunityIcons
-                  onPress={() => navigation.navigate('editarPorfile')}
                   name="square-edit-outline"
                   color="white"
                   size={40}
